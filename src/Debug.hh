@@ -58,9 +58,21 @@
 
 #endif //NDEBUG
 
+//===================================================================================================================
+//
+//  STATUS Macro checks the given expression in Debug mode, disabled in Release mode
+//
+//===================================================================================================================
 
+#ifndef NDEBUG
 
+#define STATUS(MSG) \
+   { std::stringstream ss; \
+     ss << MSG; \
+     internal::warnFct ( ss.str(), __FILE__, __LINE__ );\
+   }
 
+#endif //NDEBUG
 
 
 namespace internal
@@ -73,6 +85,7 @@ namespace internal
 
    void warnFct( const std::string & message,
                  const char * const filename, int line );
+   void statFct( const std::string & message, const char * const filename, int line );
 
 }
 

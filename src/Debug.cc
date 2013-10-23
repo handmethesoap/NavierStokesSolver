@@ -59,6 +59,11 @@ namespace internal
       std::cerr <<  "\t" << message << std::endl;
    }
 
+   void statFct( const std::string & message, const char * const filename, int line )
+   {
+      std::cerr << "Status\n\tFile:       " << filename << ":" << line << "\n";
+      std::cerr <<  "\t" << message << std::endl;
+   }
 
 }
 
