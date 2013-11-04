@@ -2,9 +2,11 @@
 #define FILEREADER_HH
 
 #include <string>
+#include <map>
+#include <utility>
 
 #include "Types.hh"
-
+#include "Debug.hh"
 
 //*******************************************************************************************************************
 /*! Class for reading configuration from a file
@@ -64,30 +66,40 @@ public:
 	void printParameters() const;
 
 private:
-
+	
+	std::map< const std::string, int > _intParameters;
+	std::map< const std::string, double > _realParameters;
+	std::map< const std::string, std::string > _stringParameters;
+	
 };
-
-
 
 
 inline int FileReader::getIntParameter(const std::string &key) const
 {
-   //TODO
-   return 0;
+   std::map< const std::string, int >::const_iterator parameter = _intParameters.find(key);
+   
+   ASSERT_MSG(parameter != _intParameters.end(),"Failed attempt to access int parameter");
+   
+   return parameter->second;
 }
 
 inline real FileReader::getRealParameter(const std::string &key) const
 {
-   //TODO
-   return 0.0;
+   std::map< const std::string, real >::const_iterator parameter =_realParameters.find(key);
+   
+   ASSERT_MSG(parameter != _realParameters.end(),"Failed attempt to access real parameter");
+   
+   return parameter->second;
 }
 
 inline std::string FileReader::getStringParameter(const std::string &key) const
 {
-   //TODO
-   return "";
+   std::map< const std::string, std::string >::const_iterator parameter = _stringParameters.find(key);
+   
+   ASSERT_MSG(parameter != _stringParameters.end(),"Failed attempt to access string parameter");
+   
+   return parameter->second;
 }
-
 
 
 

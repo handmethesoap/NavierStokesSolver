@@ -16,5 +16,17 @@ int main( int argc, char** argv )
     test2 = test;
     std::cout << test2(3,3,3) << std::endl;
     test2.print();
+    
+    FileReader testread;
+    testread.registerStringParameter("name");
+    testread.registerIntParameter("bcN");
+    testread.registerIntParameter("bcE");
+    testread.registerIntParameter("bcS");
+    testread.registerIntParameter("bcW");
+    testread.registerRealParameter("GX");
+    testread.registerRealParameter("GY");
+    
+    testread.readFile("parameters.txt");
+    testread.printParameters();
    return 0;
 }
