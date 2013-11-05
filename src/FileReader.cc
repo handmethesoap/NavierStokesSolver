@@ -38,35 +38,36 @@ void FileReader::setParameter(const std::string &key, int in)
 
 bool FileReader::readFile(const std::string &name)
 {
-   std::ifstream infile(name.c_str());
-  if (infile.good()){
-      while (!infile.eof()){
-	std::string line, param;
-	std::stringstream ss;
-	getline(infile,line);
-	line.assign(line.substr(0,line.find('#')));
-	ss<<line;
-	ss>>param;
-	
-	if(_intParameters.find(param) != _intParameters.end())
-	{
-	  ss >> _intParameters[param];
-	}
-	else if(_realParameters.find(param) != _realParameters.end())
-	{
-	  ss >> _realParameters[param];
-	}
-	else if(_stringParameters.find(param) != _stringParameters.end())
-	{
-	  ss >> _stringParameters[param];
-	}
-      }
-      infile.close();
+  std::ifstream infile(name.c_str());
+   
+  CHECK_MSG(infile.good(),"Error reading '" << name << "'.  Please check file exists and is named correctly");
+
+  while (!infile.eof()){
+    std::string line, param;
+    std::stringstream tt;
+    getline(infile,line);
+    line.assign(line.substr(0,line.find('#')));
+    tt<<line;
+    tt>>param;
+    
+    if(_intParameters.find(param) != _intParameters.end())
+    {
+      tt >> _intParameters[param];
+      CHECK_MSG(!tt.fail(), "Parameter " << param << " in file " << name << " is not an integer");
+    }
+    else if(_realParameters.find(param) != _realParameters.end())
+    {
+      tt >> _realParameters[param];
+      CHECK_MSG(!tt.fail(), "Parameter " << param << " in file " << name << " is not a real");
+    }
+    else if(_stringParameters.find(param) != _stringParameters.end())
+    {
+      tt >> _stringParameters[param];
+      CHECK_MSG(!tt.fail(), "Parameter " << param << " in file " << name << " is not a string");
+    }
   }
-  else{
-      std::cerr<<"Error reading '"<<name<<"'"<<std::endl;
-      return 0;
-  }
+  infile.close();
+
   return true;
 }
 

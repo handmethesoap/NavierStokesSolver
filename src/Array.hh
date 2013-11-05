@@ -41,6 +41,8 @@ public:
 
    // initialize the whole array with a constant value
    void fill( real value );
+   
+   // initialise the array with an incrementing value
    void incrementFill( void );
 
 
@@ -49,7 +51,7 @@ public:
 
    // return xSize for dimension==0, ySize for dimension==1 and zSize for dimension==2
    // other dimension values are not allowed
-   int getSize(int dimension ) const;
+   int getSize( int dimension ) const;
 
 
    // Print the whole array ( for debugging purposes )

@@ -60,7 +60,7 @@
 
 //===================================================================================================================
 //
-//  STATUS Macro checks the given expression in Debug mode, disabled in Release mode
+//  STATUS Macro displays a status message in Debug mode, disabled in Release mode
 //
 //===================================================================================================================
 

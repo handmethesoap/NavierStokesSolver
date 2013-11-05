@@ -11,16 +11,28 @@
 
 Array::Array( int xSize ) : _xSize(xSize), _ySize(1), _zSize(1)
 {
+
+  CHECK_MSG(xSize >= 0, "the x dimension of the array cannot be negative");
+
    _array = new double[ xSize ];
 }
 
 Array::Array( int xSize, int ySize ) : _xSize(xSize), _ySize(ySize), _zSize(1)
 {
+
+  CHECK_MSG(xSize >= 0, "the x dimension of the array cannot be negative");
+  CHECK_MSG(ySize >= 0, "the y dimension of the array cannot be negative");
+
    _array = new double[ xSize*ySize ];
 }
 
 Array::Array( int xSize, int ySize, int zSize ) : _xSize(xSize), _ySize(ySize), _zSize(zSize)
 {
+
+  CHECK_MSG(xSize >= 0, "the x dimension of the array cannot be negative");
+  CHECK_MSG(ySize >= 0, "the y dimension of the array cannot be negative");
+  CHECK_MSG(zSize >= 0, "the z dimension of the array cannot be negative");
+
    _array = new double[ xSize*ySize*zSize ];
 }
 

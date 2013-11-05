@@ -1,32 +1,32 @@
 #include "Array.hh"
 #include "FileReader.hh"
+#include "Debug.hh"
 
 #include <iostream>
 
 
 int main( int argc, char** argv )
 {
+    CHECK_MSG(argc == 2,"The command line requires a single input of the parameter file name");
 
-    Array test(7, 6, 5);
-    test.incrementFill();
-    Array test2(1,2,3);
-    test2.fill(2.0);
-    std::cout << test2(0,1,1) << std::endl;
-    test2.print();
-    test2 = test;
-    std::cout << test2(3,3,3) << std::endl;
-    test2.print();
+    std::string parameterfile = argv[1];
+
+    FileReader read;
     
-    FileReader testread;
-    testread.registerStringParameter("name");
-    testread.registerIntParameter("bcN");
-    testread.registerIntParameter("bcE");
-    testread.registerIntParameter("bcS");
-    testread.registerIntParameter("bcW");
-    testread.registerRealParameter("GX");
-    testread.registerRealParameter("GY");
+    read.registerIntParameter("width");
+    read.registerIntParameter("height");
+    read.registerIntParameter("x");
+    read.registerIntParameter("y");
+    read.registerRealParameter("initial");
     
-    testread.readFile("parameters.txt");
-    testread.printParameters();
-   return 0;
+    read.readFile(parameterfile);
+    read.printParameters();
+    
+    Array testArray( read.getIntParameter("width"), read.getIntParameter("height") );
+    testArray.fill( read.getRealParameter("initial") );
+    testArray( read.getIntParameter("x"), read.getIntParameter("y") ) = 2.0*testArray( read.getIntParameter("x"), read.getIntParameter("y") );
+    
+    testArray.print();
+
+    return 0;
 }
