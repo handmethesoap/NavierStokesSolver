@@ -23,10 +23,18 @@ class StaggeredGrid
 {
 public:
    // Constructors to manually create staggered grid
-   StaggeredGrid ( int xSize, int ySize, real dx, real dy ); // TODO implement!
+   StaggeredGrid ( int xSize, int ySize, real dx, real dy ){
+     p_ = new double [ (xSize + 2)*(ySize + 2) ];
+     dx_ = dx;
+     dy_ = dy;
+   }
 
    // Constructor to create a staggered grid from a parsed configuration file
-   StaggeredGrid ( const FileReader & configuration );       // TODO implement!
+   StaggeredGrid ( const FileReader & configuration ){
+     p_ = new double [ (configuration.getIntParameter("imax") + 2)*(configuration.getIntParameter("jmax") + 2) ];
+     dx_ = (configuration.getIntParameter("xlength")) / (configuration.getIntParameter("imax"));
+     dy_ = (configuration.getIntParameter("ylength")) / (configuration.getIntParameter("jmax"));
+   }
 
 
    // Getters / Setters for member variables

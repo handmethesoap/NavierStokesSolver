@@ -1,6 +1,7 @@
 #include "Array.hh"
 #include "FileReader.hh"
 #include "Debug.hh"
+#include "SORSolver.hh"
 
 #include <iostream>
 
@@ -13,20 +14,21 @@ int main( int argc, char** argv )
 
     FileReader read;
     
-    read.registerIntParameter("width");
-    read.registerIntParameter("height");
-    read.registerIntParameter("x");
-    read.registerIntParameter("y");
-    read.registerRealParameter("initial");
+    read.registerIntParameter("xlength");
+    read.registerIntParameter("ylength");
+    read.registerIntParameter("imax");
+    read.registerIntParameter("jmax");
     
     read.readFile(parameterfile);
     read.printParameters();
     
-    Array testArray( read.getIntParameter("width"), read.getIntParameter("height") );
-    testArray.fill( read.getRealParameter("initial") );
-    testArray( read.getIntParameter("x"), read.getIntParameter("y") ) = 2.0*testArray( read.getIntParameter("x"), read.getIntParameter("y") );
+    SORSolver solver(read);
     
-    testArray.print();
+//     Array testArray( read.getIntParameter("width"), read.getIntParameter("height") );
+//     testArray.fill( read.getRealParameter("initial") );
+//     testArray( read.getIntParameter("x"), read.getIntParameter("y") ) = 2.0*testArray( read.getIntParameter("x"), read.getIntParameter("y") );
+//     
+//     testArray.print();
 
     return 0;
 }
