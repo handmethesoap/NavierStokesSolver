@@ -23,18 +23,13 @@ class StaggeredGrid
 {
 public:
    // Constructors to manually create staggered grid
-   StaggeredGrid ( int xSize, int ySize, real dx, real dy ){
-     p_ = new double [ (xSize + 2)*(ySize + 2) ];
-     dx_ = dx;
-     dy_ = dy;
-   }
+   StaggeredGrid ( int xSize, int ySize, real dxx, real dyy ) : p_((xSize + 2),(ySize + 2)), rhs_(xSize, ySize), dx_(dxx), dy_(dyy) {}
 
    // Constructor to create a staggered grid from a parsed configuration file
-   StaggeredGrid ( const FileReader & configuration ){
-     p_ = new double [ (configuration.getIntParameter("imax") + 2)*(configuration.getIntParameter("jmax") + 2) ];
-     dx_ = (configuration.getIntParameter("xlength")) / (configuration.getIntParameter("imax"));
-     dy_ = (configuration.getIntParameter("ylength")) / (configuration.getIntParameter("jmax"));
-   }
+   StaggeredGrid ( const FileReader & configuration ) : p_((configuration.getIntParameter("imax") + 2), (configuration.getIntParameter("jmax") + 2)), 
+							rhs_(configuration.getIntParameter("imax"), configuration.getIntParameter("jmax")), 
+							dx_(configuration.getIntParameter("xlength") / configuration.getIntParameter("imax")),
+							dy_(configuration.getIntParameter("ylength") / configuration.getIntParameter("jmax")){}
 
 
    // Getters / Setters for member variables
@@ -44,8 +39,8 @@ public:
    const Array & p()   const { return p_;   }
    const Array & rhs() const { return rhs_; }
 
-   real dx() const { return dx; }
-   real dy() const { return dy; }
+   real dx() const { return dx_; }
+   real dy() const { return dy_; }
 
 protected:
    Array p_;   //< pressure field

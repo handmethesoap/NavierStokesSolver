@@ -59,7 +59,7 @@ public:
 
 private:
 
-    double* _array;
+    real* _array;
     int _xSize;
     int _ySize;
     int _zSize;
