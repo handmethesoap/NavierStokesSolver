@@ -4,7 +4,7 @@
 
 #include "Types.hh"
 #include "Array.hh"
-
+#include "FileReader.hh"
 
 //*******************************************************************************************************************
 /*! Class for storing all arrays required for the simulation
@@ -28,8 +28,8 @@ public:
    // Constructor to create a staggered grid from a parsed configuration file
    StaggeredGrid ( const FileReader & configuration ) : p_((configuration.getIntParameter("imax") + 2), (configuration.getIntParameter("jmax") + 2)), 
 							rhs_(configuration.getIntParameter("imax"), configuration.getIntParameter("jmax")), 
-							dx_(configuration.getIntParameter("xlength") / configuration.getIntParameter("imax")),
-							dy_(configuration.getIntParameter("ylength") / configuration.getIntParameter("jmax")){}
+							dx_(double(configuration.getIntParameter("xlength")) / double(configuration.getIntParameter("imax"))),
+							dy_(double(configuration.getIntParameter("ylength")) / double(configuration.getIntParameter("jmax"))){}
 
 
    // Getters / Setters for member variables
@@ -41,6 +41,12 @@ public:
 
    real dx() const { return dx_; }
    real dy() const { return dy_; }
+   
+   void initialiseP(double(* initialiser)(double, double));
+   void initialiseRHS(double(* initialiser)(double, double));
+   
+   void printP() { p_.print(); }
+   void printRHS() { rhs_.print(); }
 
 protected:
    Array p_;   //< pressure field

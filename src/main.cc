@@ -2,7 +2,8 @@
 #include "FileReader.hh"
 #include "Debug.hh"
 #include "SORSolver.hh"
-
+#include "StaggeredGrid.hh"
+#include "initialisers.hh"
 #include <iostream>
 
 
@@ -18,11 +19,24 @@ int main( int argc, char** argv )
     read.registerIntParameter("ylength");
     read.registerIntParameter("imax");
     read.registerIntParameter("jmax");
+    read.registerRealParameter("eps");
+    read.registerRealParameter("omg");
+    read.registerIntParameter("itermax");
     
     read.readFile(parameterfile);
     read.printParameters();
+
+    StaggeredGrid grid(read);
+    
+    grid.initialiseP(sin_function);
+    grid.initialiseRHS(zero_function);
+    
+    grid.printP();
+    grid.printRHS();
     
     SORSolver solver(read);
+    
+    solver.solve(grid);
     
 //     Array testArray( read.getIntParameter("width"), read.getIntParameter("height") );
 //     testArray.fill( read.getRealParameter("initial") );

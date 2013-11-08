@@ -69,7 +69,7 @@
 #define STATUS(MSG) \
    { std::stringstream ss; \
      ss << MSG; \
-     internal::warnFct ( ss.str(), __FILE__, __LINE__ );\
+     internal::statFct ( ss.str(), __FILE__, __LINE__ );\
    }
 
 #endif //NDEBUG
