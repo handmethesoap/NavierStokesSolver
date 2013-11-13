@@ -1,5 +1,6 @@
 #include "Array.hh"
 #include <iostream>
+#include <iomanip>
 
 
 //===================================================================================================================
@@ -99,7 +100,7 @@ void Array::print()
     {
       for( int x = 0; x < _xSize; ++x ) 
       {
-	std::cout << (*this)(x, y, z) << " ";
+	std::cout << std::left << std::setw(13) << (*this)(x, y, z);
       }
       std::cout << std::endl;
     }

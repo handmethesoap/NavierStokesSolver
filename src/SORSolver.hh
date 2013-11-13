@@ -2,6 +2,7 @@
 #define SOR_SOLVER_HH
 
 #include "StaggeredGrid.hh"
+#include "Debug.hh"
 
 
 class SORSolver
@@ -28,6 +29,7 @@ public:
 
    // solve the pressure equation on the staggered grid
    bool solve( StaggeredGrid & grid );
+   void fillBoundary( StaggeredGrid & grid );
 
 private:
    int xSize_;

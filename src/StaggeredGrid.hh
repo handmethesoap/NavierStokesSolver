@@ -44,9 +44,7 @@ public:
    
    void initialiseP(double(* initialiser)(double, double));
    void initialiseRHS(double(* initialiser)(double, double));
-   
-   void printP() { p_.print(); }
-   void printRHS() { rhs_.print(); }
+  
 
 protected:
    Array p_;   //< pressure field

@@ -28,15 +28,17 @@ int main( int argc, char** argv )
 
     StaggeredGrid grid(read);
     
-    grid.initialiseP(sin_function);
-    grid.initialiseRHS(zero_function);
+    grid.initialiseP(x_function);
+    grid.initialiseRHS(sinx_function);
     
-    grid.printP();
-    grid.printRHS();
-    
+    grid.p().print();
     SORSolver solver(read);
     
     solver.solve(grid);
+    
+    
+    grid.p().print();
+    grid.rhs().print();
     
 //     Array testArray( read.getIntParameter("width"), read.getIntParameter("height") );
 //     testArray.fill( read.getRealParameter("initial") );

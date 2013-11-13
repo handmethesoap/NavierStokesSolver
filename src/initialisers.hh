@@ -11,3 +11,13 @@ double zero_function(double x, double y){
   double value = 0.0;
   return value;
 }
+
+double x_function(double x, double y){
+  double value = x;
+  return value;
+}
+
+double sinx_function(double x, double y){
+  double value = sin(2*pi*x);
+  return value;
+}
