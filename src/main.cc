@@ -28,8 +28,8 @@ int main( int argc, char** argv )
 
     StaggeredGrid grid(read);
     
-    grid.initialiseP(rand_function);
-    grid.initialiseRHS(sinx_function);
+    grid.initialiseP(test_function);
+    grid.initialiseRHS(zero_function);
     
     grid.p().print();
     SORSolver solver(read);

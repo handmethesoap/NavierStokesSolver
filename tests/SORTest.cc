@@ -23,6 +23,7 @@ void initGridSetup2( StaggeredGrid & grid )
 
 int main()
 {
+  srand (u_int(time(NULL)));
   FileReader read;
     
   read.registerIntParameter("xlength");

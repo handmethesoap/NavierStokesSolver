@@ -31,4 +31,8 @@ real rand_function(real x, real y){
   return value;
 }
 
+real test_function(real x, real y){
+  real value = sin(4*pi*x) + sin(4*pi*y);
+  return value;
+}
 #endif
