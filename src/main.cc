@@ -28,7 +28,7 @@ int main( int argc, char** argv )
 
     StaggeredGrid grid(read);
     
-    grid.initialiseP(x_function);
+    grid.initialiseP(rand_function);
     grid.initialiseRHS(sinx_function);
     
     grid.p().print();
@@ -36,15 +36,10 @@ int main( int argc, char** argv )
     
     solver.solve(grid);
     
-    
     grid.p().print();
     grid.rhs().print();
     
-//     Array testArray( read.getIntParameter("width"), read.getIntParameter("height") );
-//     testArray.fill( read.getRealParameter("initial") );
-//     testArray( read.getIntParameter("x"), read.getIntParameter("y") ) = 2.0*testArray( read.getIntParameter("x"), read.getIntParameter("y") );
-//     
-//     testArray.print();
+
 
     return 0;
 }

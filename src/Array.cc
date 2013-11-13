@@ -15,7 +15,7 @@ Array::Array( int xSize ) : _xSize(xSize), _ySize(1), _zSize(1)
 
   CHECK_MSG(xSize >= 0, "the x dimension of the array cannot be negative");
 
-   _array = new double[ xSize ];
+   _array = new real[ xSize ];
 }
 
 Array::Array( int xSize, int ySize ) : _xSize(xSize), _ySize(ySize), _zSize(1)
@@ -24,7 +24,7 @@ Array::Array( int xSize, int ySize ) : _xSize(xSize), _ySize(ySize), _zSize(1)
   CHECK_MSG(xSize >= 0, "the x dimension of the array cannot be negative");
   CHECK_MSG(ySize >= 0, "the y dimension of the array cannot be negative");
 
-   _array = new double[ xSize*ySize ];
+   _array = new real[ xSize*ySize ];
 }
 
 Array::Array( int xSize, int ySize, int zSize ) : _xSize(xSize), _ySize(ySize), _zSize(zSize)
@@ -34,12 +34,12 @@ Array::Array( int xSize, int ySize, int zSize ) : _xSize(xSize), _ySize(ySize), 
   CHECK_MSG(ySize >= 0, "the y dimension of the array cannot be negative");
   CHECK_MSG(zSize >= 0, "the z dimension of the array cannot be negative");
 
-   _array = new double[ xSize*ySize*zSize ];
+   _array = new real[ xSize*ySize*zSize ];
 }
 
 Array::Array(const Array& s) : _xSize(s._xSize), _ySize(s._ySize), _zSize(s._zSize)
 {
-  _array = new double[ s._xSize*s._ySize*s._zSize ];
+  _array = new real[ s._xSize*s._ySize*s._zSize ];
   for( int i = 0; i < s._xSize*s._ySize*s._zSize; ++i )
   {
     _array[i] = s._array[i];
@@ -62,7 +62,7 @@ Array& Array::operator= (const Array& s)
 
 Array::~Array()
 {
-  delete _array;
+  delete [] _array;
 }
 
 

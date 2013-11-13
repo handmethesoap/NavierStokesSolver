@@ -42,8 +42,8 @@ public:
    real dx() const { return dx_; }
    real dy() const { return dy_; }
    
-   void initialiseP(double(* initialiser)(double, double));
-   void initialiseRHS(double(* initialiser)(double, double));
+   void initialiseP(real(* initialiser)(real, real));
+   void initialiseRHS(real(* initialiser)(real, real));
   
 
 protected:

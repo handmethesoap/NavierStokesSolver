@@ -1,45 +1,56 @@
 
 #include "SORSolver.hh"
 #include "StaggeredGrid.hh"
+#include "initialisers.hh"
 
 
 
 void initGridSetup1( StaggeredGrid & grid )
 {
    // Setup 1:
-   //    - grid.p   : init with random values
-   //    - grid.rhs : init with zero
+   grid.initialiseP( rand_function );
+   grid.initialiseRHS( zero_function );
 }
 
 void initGridSetup2( StaggeredGrid & grid )
 {
    // Setup 2:
-   //    - grid.p   : init with random values
-   //    - grid.rhs : f(x,y) = sin(2 * x * \pi)
+   grid.initialiseP( rand_function );
+   grid.initialiseRHS( sinx_function );
 }
 
 
 
 int main()
 {
-   // TODO
+  FileReader read;
+    
+  read.registerIntParameter("xlength");
+  read.registerIntParameter("ylength");
+  read.registerIntParameter("imax");
+  read.registerIntParameter("jmax");
+  read.registerRealParameter("eps");
+  read.registerRealParameter("omg");
+  read.registerIntParameter("itermax");
+  
+  read.readFile("poisson.par");
 
-   // Create staggered grid
-   // StaggeredGrid grid ( ... );
+  // Create staggered grid
+  StaggeredGrid grid ( read );
 
 
-   // create solver
-   // SORSolver solver (  )
+  // create solver
+  SORSolver solver ( read );
 
 
-   // initGridSetup1( grid );
-   // solver.solve( grid );
-   // checkResiduum ( using CHECK() macro )
+  initGridSetup1( grid );
+  solver.solve( grid );
+  CHECK( solver.calcResidual( grid ) < read.getRealParameter("eps") );
 
 
-   // initGridSetup2( grid );
-   // solver.solve( grid );
-   // checkResiduum ( using CHECK() macro )
+  initGridSetup2( grid );
+  solver.solve( grid );
+  CHECK( solver.calcResidual( grid ) < read.getRealParameter("eps") );
 
 
    return 0;

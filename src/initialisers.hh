@@ -1,23 +1,34 @@
+#ifndef INITIALISERS_HH
+#define INITIALISERS_HH
+
 #include <cmath>
+#include <cstdlib>
 
-const double pi = 3.14159;
+const real pi = 3.141592653589793238463;
 
-double sin_function(double x, double y){
-  double value = sin(x*pi) + sin(y*pi);
+real sin_function(real x, real y){
+  real value = sin(x*pi) + sin(y*pi);
   return value;
 }
 
-double zero_function(double x, double y){
-  double value = 0.0;
+real zero_function(real x, real y){
+  real value = 0.0;
   return value;
 }
 
-double x_function(double x, double y){
-  double value = x;
+real x_function(real x, real y){
+  real value = x;
   return value;
 }
 
-double sinx_function(double x, double y){
-  double value = sin(2*pi*x);
+real sinx_function(real x, real y){
+  real value = sin(2*pi*x);
   return value;
 }
+
+real rand_function(real x, real y){
+  real value = rand() % 100;
+  return value;
+}
+
+#endif
