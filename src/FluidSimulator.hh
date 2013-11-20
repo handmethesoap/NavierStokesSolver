@@ -3,11 +3,27 @@
 
 
 #include "FileReader.hh"
+#include "StaggeredGrid.hh"
+#include "SORSolver.hh"
+#include "Debug.hh"
 
 class FluidSimulator
 {
   public:
-      FluidSimulator( const FileReader & conf );
+      FluidSimulator( const FileReader & conf ) : grid_(conf),
+						  solve_(conf),
+						  gamma_(conf.getRealParameter("gamma")),
+						  dt_(conf.getRealParameter("dt")),
+						  Re_(conf.getRealParameter("Re")),
+						  gx_(conf.getRealParameter("gx")),
+						  gy_(conf.getRealParameter("gy")){
+	grid_.initialiseP(conf.getRealParameter("P_init"));
+	grid_.initialiseU(conf.getRealParameter("U_init"));
+	grid_.initialiseV(conf.getRealParameter("V_init"));
+	
+	CHECK_MSG(dt_ > 0.0, "The timestep must be a positive value");
+	CHECK_MSG( 0.0 < gamma_ && gamma_ < 1.0, "gamma must lie between 0 and 1");
+      }
 
       /// Simulates a given time-length
       void simulate             ( real duration              );
@@ -15,11 +31,20 @@ class FluidSimulator
 
 
       // Getter functions for the internally stored StaggeredGrid
-            StaggeredGrid & grid();
-      const StaggeredGrid & grid() const;
+            StaggeredGrid & grid() { return grid_; };
+      const StaggeredGrid & grid() const { return grid_; };
 
-  private:
+  
       void computeFG();
+  private:    
+      StaggeredGrid grid_;
+      SORSolver solve_;
+      
+      real gamma_;
+      real dt_;
+      real Re_;
+      real gx_;
+      real gy_;
 
 };
 

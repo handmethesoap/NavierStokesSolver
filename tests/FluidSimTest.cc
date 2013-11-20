@@ -1,19 +1,10 @@
-#include "Array.hh"
+#include "FluidSimulator.hh"
 #include "FileReader.hh"
 #include "Debug.hh"
-#include "SORSolver.hh"
-#include "StaggeredGrid.hh"
-#include "initialisers.hh"
-#include "FluidSimulator.hh"
 #include <iostream>
 
-
-int main( int argc, char** argv )
+int main()
 {
-    CHECK_MSG(argc == 2,"The command line requires a single input of the parameter file name");
-
-    std::string parameterfile = argv[1];
-
     FileReader read;
     
     read.registerIntParameter("xlength");
@@ -35,20 +26,25 @@ int main( int argc, char** argv )
     read.registerIntParameter("checkfrequency");
     read.registerIntParameter("normalizationfrequency");
     
-    read.readFile(parameterfile);
-    read.printParameters();
+    read.readFile("dcavity.par");
     
     FluidSimulator fluid(read);
     
     fluid.computeFG();
     
-    fluid.grid().u().print();
-    fluid.grid().v().print();
-    fluid.grid().f().print();
-    fluid.grid().g().print();
-
+    //For u an array of a single constant F equals this constant
+    for(int i = 0; i < fluid.grid().f().getSize(0); ++i){
+      for(int j = 0; j < fluid.grid().f().getSize(1); ++j){
+	CHECK_MSG(fluid.grid().f()(i,j) == read.getRealParameter("U_init"), "F calculated incorrectly");
+      }
+    }
     
-
-
-    return 0;
+    //For v an array of a single constant G equals this constant
+    for(int i = 0; i < fluid.grid().g().getSize(0); ++i){
+      for(int j = 0; j < fluid.grid().g().getSize(1); ++j){
+	CHECK_MSG(fluid.grid().g()(i,j) == read.getRealParameter("V_init"), "G calculated incorrectly");
+      }
+    }
+    
+    std::cout << "Test passed" << std::endl;
 }

@@ -16,7 +16,10 @@ public:
    // Constructor to create a SORSolver from a parsed configuration file
    SORSolver ( const FileReader & configuration ) : itermax_(configuration.getIntParameter("itermax")),
 						    eps_(configuration.getRealParameter("eps")),
-						    omg_(configuration.getRealParameter("omg")){}
+						    omg_(configuration.getRealParameter("omg")){
+						      
+    CHECK_MSG(itermax_ > 0, "the program will not perform any iterations unless intermax is set greater than zero");
+  }
 
 
    // solve the pressure equation on the staggered grid
