@@ -1,0 +1,1 @@
+In order to operate fluidsim_test.exe place a paramter file in the same directory as it.
