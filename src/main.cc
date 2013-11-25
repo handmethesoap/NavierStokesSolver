@@ -33,19 +33,23 @@ int main( int argc, char** argv )
     read.registerRealParameter("dt");
     read.registerIntParameter("timesteps");
     read.registerIntParameter("checkfrequency");
-    read.registerIntParameter("normalizationfrequency");
-    
-    read.readFile(parameterfile);
+    read.registerRealParameter("safetyfactor");
+
+    CHECK_MSG( read.readFile(parameterfile), "Could not read config file");
     read.printParameters();
     
     FluidSimulator fluid(read);
+    //fluid.grid().initialiseU(x_function);
+    //fluid.grid().initialiseV(y_function);
     
-    fluid.computeFG();
     
-    fluid.grid().u().print();
-    fluid.grid().v().print();
-    fluid.grid().f().print();
-    fluid.grid().g().print();
+    fluid.simulate(1.0);
+    
+//     fluid.grid().u().print();
+//     fluid.grid().v().print();
+//     fluid.grid().f().print();
+//     fluid.grid().g().print();
+//     fluid.grid().rhs().print();
 
     
 

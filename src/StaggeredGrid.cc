@@ -23,6 +23,26 @@ void StaggeredGrid::initialiseRHS(real(* initialiser)(real, real)){
   }
 }
 
+void StaggeredGrid::initialiseU(real(* initialiser)(real, real)){
+  for(int y = 0; y < (u_.getSize(1)); ++y)
+  {
+    for(int x = 0; x < (u_.getSize(0)); ++x)
+    {
+      u_(x,y) = initialiser((real(x)+0.5)*dx_, (real(y)+0.5)*dy_);
+    }
+  }
+}
+
+void StaggeredGrid::initialiseV(real(* initialiser)(real, real)){
+  for(int y = 0; y < (v_.getSize(1)); ++y)
+  {
+    for(int x = 0; x < (v_.getSize(0)); ++x)
+    {
+      v_(x,y) = initialiser((real(x)+0.5)*dx_, (real(y)+0.5)*dy_);
+    }
+  }
+}
+
 void StaggeredGrid::initialiseP(real value){
 
   for(int y = 1; y < (p_.getSize(1) - 1); ++y)

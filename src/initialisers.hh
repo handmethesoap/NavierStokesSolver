@@ -21,6 +21,11 @@ real x_function(real x, real y){
   return value;
 }
 
+real y_function(real x, real y){
+  real value = y;
+  return value;
+}
+
 real sinx_function(real x, real y){
   real value = sin(2*pi*x);
   return value;

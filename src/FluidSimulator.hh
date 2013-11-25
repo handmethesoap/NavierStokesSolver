@@ -16,13 +16,15 @@ class FluidSimulator
 						  dt_(conf.getRealParameter("dt")),
 						  Re_(conf.getRealParameter("Re")),
 						  gx_(conf.getRealParameter("gx")),
-						  gy_(conf.getRealParameter("gy")){
+						  gy_(conf.getRealParameter("gy")),
+						  safetyfactor_(conf.getRealParameter("safetyfactor")){
 	grid_.initialiseP(conf.getRealParameter("P_init"));
 	grid_.initialiseU(conf.getRealParameter("U_init"));
 	grid_.initialiseV(conf.getRealParameter("V_init"));
 	
 	CHECK_MSG(dt_ > 0.0, "The timestep must be a positive value");
 	CHECK_MSG( 0.0 < gamma_ && gamma_ < 1.0, "gamma must lie between 0 and 1");
+	CHECK_MSG( safetyfactor_ != 0, "the safetyfactor cannot be zero");
       }
 
       /// Simulates a given time-length
@@ -33,10 +35,15 @@ class FluidSimulator
       // Getter functions for the internally stored StaggeredGrid
             StaggeredGrid & grid() { return grid_; };
       const StaggeredGrid & grid() const { return grid_; };
-
-  
-      void computeFG();
+      
   private:    
+    
+      void computeFG();
+      void composeRHS();
+      void updateVelocities();
+      void determineNextDT( real const & limit );  //What is limit supposed to do?
+      void refreshBoundaries();
+      
       StaggeredGrid grid_;
       SORSolver solve_;
       
@@ -45,6 +52,7 @@ class FluidSimulator
       real Re_;
       real gx_;
       real gy_;
+      real safetyfactor_;
 
 };
 

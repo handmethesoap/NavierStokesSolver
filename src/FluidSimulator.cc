@@ -2,6 +2,16 @@
 #include <cmath>
 #include <iostream>
 
+void FluidSimulator:: simulate             ( real duration              ){
+//   computeFG();
+//   composeRHS();
+//   solve_.solve(grid_);
+//   updateVelocities();
+  real const & limit = 1.0;
+  determineNextDT(limit);
+  
+}
+
 void FluidSimulator::computeFG(){
   
   real d2udx2;
@@ -119,3 +129,100 @@ void FluidSimulator::computeFG(){
   }
   
 }
+
+void FluidSimulator:: composeRHS(){
+  
+  for( int i = 0; i < grid_.rhs().getSize(0); ++i ){
+    for( int j = 0; j < grid_.rhs().getSize(1); ++j ){
+      grid_.rhs()(i,j) = ( 1.0/dt_ ) * ( ( grid_.f()(i+1,j) - grid_.f()(i,j) ) / grid_.dx() + ( grid_.g()(i,j+1) - grid_.g()(i,j) ) / grid_.dy() );
+    }
+  }
+
+}
+
+void FluidSimulator:: updateVelocities(){
+
+  for( int i = 1; i < (grid_.u().getSize(0) - 1); ++i ){
+      for( int j = 1; j <  (grid_.u().getSize(1) - 1); ++j ){
+	grid_.u()(i,j) = grid_.f()(i,j-1) - (dt_/grid_.dx())*( grid_.p()(i+1,j) - grid_.p()(i,j) );
+      }
+  }
+
+  for( int i = 1; i < (grid_.v().getSize(0) - 1); ++i ){
+      for( int j = 1; j <  (grid_.v().getSize(1) - 1); ++j ){
+	grid_.v()(i,j) = grid_.g()(i-1,j) - (dt_/grid_.dy())*( grid_.p()(i,j+1) - grid_.p()(i,j) );
+      }
+  }
+  
+}
+
+void FluidSimulator:: determineNextDT( real const & limit ){
+  
+  real min;
+  real u_max = 0.0;
+  real v_max = 0.0;
+  
+  if(safetyfactor_ > 0.0)
+  {
+    min = (Re_/2.0)*(1.0/(1.0/(grid_.dx()*grid_.dx()) + 1.0/(1.0/(grid_.dy()*grid_.dy()))));
+    
+    std::cout << "min = " << min << std::endl;
+    
+    for( int i = 0; i < grid_.u().getSize(0); ++i ){
+      for( int j = 0; j < grid_.u().getSize(1); ++j){
+	if( std::abs(grid_.u()(i,j)) > u_max ){
+	  u_max = std::abs(grid_.u()(i,j));
+	}
+      }
+    }
+    std::cout << "u_max = " << u_max << std::endl;
+    
+    if( grid_.dx()/u_max < min ){
+      min =  grid_.dx()/u_max;
+    }
+    
+    for( int i = 0; i < grid_.v().getSize(0); ++i ){
+      for( int j = 0; j < grid_.v().getSize(1); ++j){
+	if( std::abs(grid_.v()(i,j)) > v_max ){
+	  v_max = std::abs(grid_.v()(i,j));
+	}
+      }
+    }
+    std::cout << "vmax = " << v_max << std::endl;
+    
+    if( grid_.dy()/v_max < min ){
+      min =  grid_.dy()/v_max;
+    } 
+    
+    dt_ = safetyfactor_*min;
+  }
+  
+  std::cout << dt_ << std::endl;
+}
+
+void FluidSimulator:: refreshBoundaries(void){
+  
+  
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
