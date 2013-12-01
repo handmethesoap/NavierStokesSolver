@@ -36,6 +36,43 @@ void FileReader::setParameter(const std::string &key, int in)
 }
 
 
+bool FileReader:: checkIntParameterExists( const std::string & key ) const {
+  
+   std::map< const std::string, int >::const_iterator parameter = _intParameters.find(key);
+   
+   if(parameter == _intParameters.end()){
+     return 0;
+   }
+   else{
+     return 1;
+   }
+}
+
+bool FileReader::checkRealParameterExists( const std::string & key ) const {
+  
+  std::map< const std::string, real >::const_iterator parameter =_realParameters.find(key);
+   
+   if(parameter == _realParameters.end()){
+     return 0;
+   }
+   else{
+     return 1;
+   }
+}
+
+bool FileReader::checkStringParameterExists( const std::string & key ) const {
+  
+   std::map< const std::string, std::string >::const_iterator parameter = _stringParameters.find(key);
+   
+   if(parameter == _stringParameters.end()){
+     return 0;
+   }
+   else{
+     return 1;
+   }
+}
+   
+
 bool FileReader::readFile(const std::string &name)
 {
   std::ifstream infile(name.c_str());

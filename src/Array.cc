@@ -10,39 +10,39 @@
 //===================================================================================================================
 
 
-Array::Array( int xSize ) : _xSize(xSize), _ySize(1), _zSize(1)
+Array::Array( int xSize ) : xSize_(xSize), ySize_(1), zSize_(1)
 {
 
   CHECK_MSG(xSize >= 0, "the x dimension of the array cannot be negative");
 
-   _array = new real[ xSize ];
+   array_ = new real[ xSize ];
 }
 
-Array::Array( int xSize, int ySize ) : _xSize(xSize), _ySize(ySize), _zSize(1)
+Array::Array( int xSize, int ySize ) : xSize_(xSize), ySize_(ySize), zSize_(1)
 {
 
   CHECK_MSG(xSize >= 0, "the x dimension of the array cannot be negative");
   CHECK_MSG(ySize >= 0, "the y dimension of the array cannot be negative");
 
-   _array = new real[ xSize*ySize ];
+   array_ = new real[ xSize*ySize ];
 }
 
-Array::Array( int xSize, int ySize, int zSize ) : _xSize(xSize), _ySize(ySize), _zSize(zSize)
+Array::Array( int xSize, int ySize, int zSize ) : xSize_(xSize), ySize_(ySize), zSize_(zSize)
 {
 
   CHECK_MSG(xSize >= 0, "the x dimension of the array cannot be negative");
   CHECK_MSG(ySize >= 0, "the y dimension of the array cannot be negative");
   CHECK_MSG(zSize >= 0, "the z dimension of the array cannot be negative");
 
-   _array = new real[ xSize*ySize*zSize ];
+   array_ = new real[ xSize*ySize*zSize ];
 }
 
-Array::Array(const Array& s) : _xSize(s._xSize), _ySize(s._ySize), _zSize(s._zSize)
+Array::Array(const Array& s) : xSize_(s.xSize_), ySize_(s.ySize_), zSize_(s.zSize_)
 {
-  _array = new real[ s._xSize*s._ySize*s._zSize ];
-  for( int i = 0; i < s._xSize*s._ySize*s._zSize; ++i )
+  array_ = new real[ s.xSize_*s.ySize_*s.zSize_ ];
+  for( int i = 0; i < s.xSize_*s.ySize_*s.zSize_; ++i )
   {
-    _array[i] = s._array[i];
+    array_[i] = s.array_[i];
   }
 }
 
@@ -50,10 +50,10 @@ Array& Array::operator= (const Array& s)
 {
   Array tmp( s );
   
-  std::swap( _xSize, tmp._xSize );
-  std::swap( _ySize, tmp._ySize );
-  std::swap( _zSize, tmp._zSize );
-  std::swap( _array, tmp._array );
+  std::swap( xSize_, tmp.xSize_ );
+  std::swap( ySize_, tmp.ySize_ );
+  std::swap( zSize_, tmp.zSize_ );
+  std::swap( array_, tmp.array_ );
   
   return *this;
 }
@@ -62,7 +62,7 @@ Array& Array::operator= (const Array& s)
 
 Array::~Array()
 {
-  delete [] _array;
+  delete [] array_;
 }
 
 
@@ -77,14 +77,14 @@ Array::~Array()
 void Array::fill( real value )
 {
    // you might want to use std::fill() here
-  std::fill(_array, _array + this->getSize(), value);
+  std::fill(array_, array_ + this->getSize(), value);
 }
 
 void Array::incrementFill()
 {
   for( int i = 0; i < this->getSize(); ++i )
   {
-    this->_array[i] = i;
+    this->array_[i] = i;
   }
 }
 
@@ -94,11 +94,11 @@ void Array::print()
    // For 2D Arrays the positive x-coordinate goes to the right
    //                   positive y-coordinate goes upwards
    //      -> the line with highest y-value should be printed first
-  for( int z = 0; z < _zSize; ++z )
+  for( int z = 0; z < zSize_; ++z )
   {
-    for( int y = _ySize - 1; y >= 0; --y )
+    for( int y = ySize_ - 1; y >= 0; --y )
     {
-      for( int x = 0; x < _xSize; ++x ) 
+      for( int x = 0; x < xSize_; ++x ) 
       {
 	std::cout << std::left << std::setw(13) << (*this)(x, y, z);
       }
@@ -114,15 +114,15 @@ int Array::getSize( int dimension ) const
 {
    if( dimension == 0 )
    {
-     return _xSize;
+     return xSize_;
    }
    else if( dimension == 1 )
    {
-     return _ySize;
+     return ySize_;
    }
    else if( dimension == 2 )
    {
-     return _zSize;
+     return zSize_;
    }
    else
    {
@@ -133,5 +133,5 @@ int Array::getSize( int dimension ) const
 //return total size of the array
 int Array::getSize() const
 {
-   return _xSize*_ySize*_zSize;
+   return xSize_*ySize_*zSize_;
 }

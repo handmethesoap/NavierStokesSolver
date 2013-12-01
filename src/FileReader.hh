@@ -44,11 +44,20 @@ public:
 	//set a value for the key string with value in
 	void setParameter( const std::string & key, const std::string & in );
 
-	//set a value for the key string with value in
+	//set a ,"Failed attempt to access string parameter"value for the key string with value in
 	void setParameter( const std::string & key, real in );
 
 	//set a value for the key string with value in
 	void setParameter( const std::string & key, int in );
+	
+	//check an int parameter exists
+	bool checkIntParameterExists( const std::string & key ) const;
+	
+	//check a real parameter exists
+	bool checkRealParameterExists( const std::string & key ) const;
+	
+	//check a string parameter exists
+	bool checkStringParameterExists( const std::string & key ) const;
 
 	// get the int value of key 
 	inline int getIntParameter( const std::string & key ) const;

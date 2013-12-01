@@ -1,15 +1,17 @@
 #include "FluidSimulator.hh"
+#include "Debug.hh"
 #include <cmath>
 #include <iostream>
+#include <vector>
 
 void FluidSimulator:: simulate             ( real duration              ){
-//   computeFG();
-//   composeRHS();
-//   solve_.solve(grid_);
-//   updateVelocities();
+   computeFG();
+   composeRHS();
+   solve_.solve(grid_);
+   updateVelocities();
   real const & limit = 1.0;
   determineNextDT(limit);
-  
+  refreshBoundaries();
 }
 
 void FluidSimulator::computeFG(){
@@ -25,7 +27,7 @@ void FluidSimulator::computeFG(){
   
   real dx2 = grid_.dx()*grid_.dx();
   real dy2 = grid_.dy()*grid_.dy();
-  
+
   //set boundary values of f
   for(int j = 0; j < grid_.f().getSize(1); ++j){
     grid_.f()(0,j) = grid_.u()(0,j);
@@ -84,7 +86,8 @@ void FluidSimulator::computeFG(){
   }
   //calculate g
   for(int i = 1; i < grid_.g().getSize(0) + 1; ++i){
-    for(int j = 1; j < grid_.g().getSize(1) - 1; ++j){
+    for(int j = 1; j < grid_.g().getSize(1) - 1; ++j){//     fluid.grid().u().print();
+//     fluid.grid().v().print();
          
       //calculate d2v/dx2
       d2vdx2 = ( grid_.v()(i+1,j) - 2.0*grid_.v()(i,j) + grid_.v()(i-1,j) ) / dx2;
@@ -183,7 +186,7 @@ void FluidSimulator:: determineNextDT( real const & limit ){
     
     for( int i = 0; i < grid_.v().getSize(0); ++i ){
       for( int j = 0; j < grid_.v().getSize(1); ++j){
-	if( std::abs(grid_.v()(i,j)) > v_max ){
+	if( std::abs(grid_.v()(i,j)) > v_max )void refreshBoundaries();{
 	  v_max = std::abs(grid_.v()(i,j));
 	}
       }
@@ -202,6 +205,86 @@ void FluidSimulator:: determineNextDT( real const & limit ){
 
 void FluidSimulator:: refreshBoundaries(void){
   
+  static const int NORTH = 0;
+  static const int EAST = 1;
+  static const int SOUTH = 2;
+  static const int WEST = 3;
+  
+  static const std::vector< std::string> boundary_condition_labels = {"boundary_condition_N", "boundary_condition_E", "boundary_condition_S", "boundary_condition_W"};
+  static const std::vector< std::string> boundary_velocity_labels = {"boundary_velocity_N", "boundary_velocity_E", "boundary_velocity_S", "boundary_velocity_W"};
+
+  
+  std::vector<real> tangential_velocities (4); //tangential_velocity_N, tangential_velocity_E, tangential_velocity_S, tangential_velocity_W;
+  std::vector<real> normal_velocities (4); //normal_velocity_N, normal_velocity_E, normal_velocity_S, normal_velocity_W;
+  
+  std::vector<real> outflow_constants (4); //outflow_constant_N, outflow_constant_E, outflow_constant_S, outflow_constant_W;
+  std::vector<real> averaging_constants (4); //real averaging_constant_N, averaging_constant_E, averaging_constant_S, averaging_constant_W;
+  
+  for( int direction = 0; direction < 4; ++direction ){
+  
+    if( !conf_.checkStringParameterExists(boundary_condition_labels[direction]) || (conf_.getStringParameter(boundary_condition_labels[direction]) == "noslip") ){
+      
+      normal_velocities[direction] = 0.0;
+      averaging_constants[direction] = -1.0;
+      outflow_constants[direction] = 0.0;
+      
+      if( !conf_.checkRealParameterExists(boundary_velocity_labels[direction]) ){
+	tangential_velocities[direction] = 0.0;
+      }
+      else{
+	tangential_velocities[direction] = conf_.getRealParameter(boundary_velocity_labels[direction]);
+	std::cout << tangential_velocities[direction] << std::endl;
+      }
+      
+    }
+    else if( conf_.getStringParameter(boundary_condition_labels[direction]) == "inflow" ){
+      
+      tangential_velocities[direction] = 0.0;
+      averaging_constants[direction] = -1.0;
+      outflow_constants[direction] = 0.0;
+      
+      if( !conf_.checkRealParameterExists(boundary_velocity_labels[direction]) ){
+	normal_velocities[direction] = 0.0;
+      }
+      else{
+	normal_velocities[direction] = conf_.getRealParameter(boundary_velocity_labels[direction]);
+      }
+    }
+    
+    else if( conf_.getStringParameter(boundary_condition_labels[direction]) == "outflow" ){
+    
+      CHECK_MSG( !conf_.checkRealParameterExists(boundary_velocity_labels[direction]), "Boundary velocity provided for northern outflow boundary.  Check your configuration" );
+      
+      normal_velocities[direction] = 0.0;
+      tangential_velocities[direction] = 0.0;
+      outflow_constants[direction] = 1.0;
+      averaging_constants[direction] = 1.0;
+      
+    }
+    else{
+      
+      CHECK_MSG(0, "Unknown boundary condition provided for " << boundary_condition_labels[direction] << " parameter");
+      
+    }
+  }
+    
+  
+  for( int i = 1; i < grid_.u().getSize(0); ++i){
+    grid_.v()(i,0) = normal_velocities[SOUTH] + outflow_constants[SOUTH] * grid_.v()(i,1);								//set normal velocity on southern border
+    grid_.v()(i,grid_.v().getSize(1)-1) = normal_velocities[NORTH] + outflow_constants[NORTH] * grid_.v()(i,grid_.v().getSize(1)-2);			//set normal velocity on northern border
+  }
+  for( int j = 1; j < grid_.v().getSize(1); ++j){
+    grid_.u()(0,j) = normal_velocities[WEST] + outflow_constants[WEST] * grid_.u()(1,j);								//set normal velocity on western border
+    grid_.u()(grid_.u().getSize(0)-1, j) = normal_velocities[EAST] + outflow_constants[EAST] * grid_.u()(grid_.u().getSize(0)-2,j);			//set normal velocity on eastern border
+  }
+  for( int i = 1; i < grid_.u().getSize(0); ++i){
+    grid_.u()(i,0) = 2*tangential_velocities[SOUTH] + averaging_constants[SOUTH] * grid_.u()(i,1);							//set tangential velocity on southern border
+    grid_.u()(i,grid_.u().getSize(1)-1) = 2*tangential_velocities[NORTH] + averaging_constants[NORTH] * grid_.u()(i,grid_.u().getSize(1)-2);		//set tangential velocity on northern border
+  }
+  for( int j = 1; j < grid_.v().getSize(1); ++j){
+    grid_.v()(0,j) = 2*tangential_velocities[WEST] + averaging_constants[WEST] * grid_.v()(1,j);							//set tangential velocity on western border
+    grid_.v()(grid_.v().getSize(0)-1, j) = 2*tangential_velocities[EAST] + averaging_constants[EAST] * grid_.v()(grid_.v().getSize(0)-2,j);		//set tangential velocity on eastern border
+  }
   
   
 }

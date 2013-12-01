@@ -59,10 +59,10 @@ public:
 
 private:
 
-    real* _array;
-    int _xSize;
-    int _ySize;
-    int _zSize;
+    real* array_;
+    int xSize_;
+    int ySize_;
+    int zSize_;
 
 };
 
@@ -78,69 +78,69 @@ private:
 inline real& Array::operator ()(int i)
 {
   
-  ASSERT_MSG(i < _xSize, "You have attempted to access an array element larger than the upper bound in the x dimension");
+  ASSERT_MSG(i < xSize_, "You have attempted to access an array element larger than the upper bound in the x dimension");
   ASSERT_MSG(i >= 0, "You have attempted to access an array element smaller than the lower bound in the x dimension");
   
-   return _array[i];
+   return array_[i];
 }
 
 // Operator() 2D
 inline real& Array::operator ()(int i,int j)
 {
     
-  ASSERT_MSG(i < _xSize, "You have attempted to access an array element larger than the upper bound in the x dimension");
-  ASSERT_MSG(j < _ySize, "You have attempted to access an array element larger than the upper bound in the y dimension");
+  ASSERT_MSG(i < xSize_, "You have attempted to access an array element larger than the upper bound in the x dimension");
+  ASSERT_MSG(j < ySize_, "You have attempted to access an array element larger than the upper bound in the y dimension");
   ASSERT_MSG(i >= 0, "You have attempted to access an array element smaller than the lower bound in the x dimension");
   ASSERT_MSG(j >= 0, "You have attempted to access an array element smaller than the lower bound in the y dimension");
  
-   return _array[i + j*_xSize];
+   return array_[i + j*xSize_];
 }
 
 // Operator() 3D
 inline real& Array::operator ()(int i, int j, int k)
 {  
   
-  ASSERT_MSG(i < _xSize, "You have attempted to access an array element larger than the upper bound in the x dimension");
-  ASSERT_MSG(j < _ySize, "You have attempted to access an array element larger than the upper bound in the y dimension");
-  ASSERT_MSG(k < _zSize, "You have attempted to access an array element larger than the upper bound in the z dimension");
+  ASSERT_MSG(i < xSize_, "You have attempted to access an array element larger than the upper bound in the x dimension");
+  ASSERT_MSG(j < ySize_, "You have attempted to access an array element larger than the upper bound in the y dimension");
+  ASSERT_MSG(k < zSize_, "You have attempted to access an array element larger than the upper bound in the z dimension");
   ASSERT_MSG(i >= 0, "You have attempted to access an array element smaller than the lower bound in the x dimension");
   ASSERT_MSG(j >= 0, "You have attempted to access an array element smaller than the lower bound in the y dimension");
   ASSERT_MSG(k >= 0, "You have attempted to access an array element smaller than the lower bound in the z dimension");
  
-   return _array[i + j*_xSize + k*_xSize*_ySize];
+   return array_[i + j*xSize_ + k*xSize_*ySize_];
 }
 
 inline const real & Array::operator () ( int i ) const
 {
 
-  ASSERT_MSG(i < _xSize, "You have attempted to access an array element larger than the upper bound in the x dimension");
+  ASSERT_MSG(i < xSize_, "You have attempted to access an array element larger than the upper bound in the x dimension");
   ASSERT_MSG(i >= 0, "You have attempted to access an array element smaller than the lower bound in the x dimension");
   
-   return _array[i];
+   return array_[i];
 }
 
 inline const real & Array::operator () ( int i ,int j ) const
 {
  
-  ASSERT_MSG(i < _xSize, "You have attempted to access an array element larger than the upper bound in the x dimension");
-  ASSERT_MSG(j < _ySize, "You have attempted to access an array element larger than the upper bound in the y dimension");
+  ASSERT_MSG(i < xSize_, "You have attempted to access an array element larger than the upper bound in the x dimension");
+  ASSERT_MSG(j < ySize_, "You have attempted to access an array element larger than the upper bound in the y dimension");
   ASSERT_MSG(i >= 0, "You have attempted to access an array element smaller than the lower bound in the x dimension");
   ASSERT_MSG(j >= 0, "You have attempted to access an array element smaller than the lower bound in the y dimension");
   
-   return _array[i + j*_xSize];
+   return array_[i + j*xSize_];
 }
 
 inline const real & Array::operator () ( int i, int j, int k ) const
 {
   
-  ASSERT_MSG(i < _xSize, "You have attempted to access an array element larger than the upper bound in the x dimension");
-  ASSERT_MSG(j < _ySize, "You have attempted to access an array element larger than the upper bound in the y dimension");
-  ASSERT_MSG(k < _zSize, "You have attempted to access an array element larger than the upper bound in the z dimension");
+  ASSERT_MSG(i < xSize_, "You have attempted to access an array element larger than the upper bound in the x dimension");
+  ASSERT_MSG(j < ySize_, "You have attempted to access an array element larger than the upper bound in the y dimension");
+  ASSERT_MSG(k < zSize_, "You have attempted to access an array element larger than the upper bound in the z dimension");
   ASSERT_MSG(i >= 0, "You have attempted to access an array element smaller than the lower bound in the x dimension");
   ASSERT_MSG(j >= 0, "You have attempted to access an array element smaller than the lower bound in the y dimension");
   ASSERT_MSG(k >= 0, "You have attempted to access an array element smaller than the lower bound in the z dimension");
   
-   return _array[i + j*_xSize + k*_xSize*_ySize];
+   return array_[i + j*xSize_ + k*xSize_*ySize_];
 }
 
 

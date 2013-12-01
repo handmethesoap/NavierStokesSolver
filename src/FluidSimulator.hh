@@ -10,7 +10,8 @@
 class FluidSimulator
 {
   public:
-      FluidSimulator( const FileReader & conf ) : grid_(conf),
+      FluidSimulator( const FileReader & conf ) : conf_(conf),
+						  grid_(conf),
 						  solve_(conf),
 						  gamma_(conf.getRealParameter("gamma")),
 						  dt_(conf.getRealParameter("dt")),
@@ -18,9 +19,9 @@ class FluidSimulator
 						  gx_(conf.getRealParameter("gx")),
 						  gy_(conf.getRealParameter("gy")),
 						  safetyfactor_(conf.getRealParameter("safetyfactor")){
-	grid_.initialiseP(conf.getRealParameter("P_init"));
-	grid_.initialiseU(conf.getRealParameter("U_init"));
-	grid_.initialiseV(conf.getRealParameter("V_init"));
+	grid_.initialiseP(conf.getRealParameter("P_INIT"));
+	grid_.initialiseU(conf.getRealParameter("U_INIT"));
+	grid_.initialiseV(conf.getRealParameter("V_INIT"));
 	
 	CHECK_MSG(dt_ > 0.0, "The timestep must be a positive value");
 	CHECK_MSG( 0.0 < gamma_ && gamma_ < 1.0, "gamma must lie between 0 and 1");
@@ -36,14 +37,16 @@ class FluidSimulator
             StaggeredGrid & grid() { return grid_; };
       const StaggeredGrid & grid() const { return grid_; };
       
-  private:    
-    
       void computeFG();
+      void refreshBoundaries();
+  private:    
+      
       void composeRHS();
       void updateVelocities();
       void determineNextDT( real const & limit );  //What is limit supposed to do?
-      void refreshBoundaries();
       
+      
+      FileReader conf_;
       StaggeredGrid grid_;
       SORSolver solve_;
       

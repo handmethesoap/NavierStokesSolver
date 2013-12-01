@@ -27,26 +27,39 @@ int main( int argc, char** argv )
     read.registerRealParameter("gx");
     read.registerRealParameter("gy");
     read.registerRealParameter("Re");
-    read.registerRealParameter("U_init");
-    read.registerRealParameter("V_init");
-    read.registerRealParameter("P_init");
+    read.registerRealParameter("U_INIT");
+    read.registerRealParameter("V_INIT");
+    read.registerRealParameter("P_INIT");
     read.registerRealParameter("dt");
     read.registerIntParameter("timesteps");
     read.registerIntParameter("checkfrequency");
     read.registerRealParameter("safetyfactor");
+    read.registerRealParameter("boundary_velocity_N");
+    read.registerStringParameter("boundary_condition_N");
+    read.registerRealParameter("boundary_velocity_S");
+    read.registerStringParameter("boundary_condition_S");
+    read.registerRealParameter("boundary_velocity_E");
+    read.registerStringParameter("boundary_condition_E");
+    //read.registerRealParameter("boundary_velocity_W");
+    read.registerStringParameter("boundary_condition_W");
 
     CHECK_MSG( read.readFile(parameterfile), "Could not read config file");
     read.printParameters();
     
+    
+    
     FluidSimulator fluid(read);
-    //fluid.grid().initialiseU(x_function);
-    //fluid.grid().initialiseV(y_function);
     
+    fluid.grid().initialiseU(xy_function);
+    fluid.grid().initialiseV(xy_function);
     
+    fluid.grid().u().print();
+    fluid.grid().v().print();
+
     fluid.simulate(1.0);
     
-//     fluid.grid().u().print();
-//     fluid.grid().v().print();
+    fluid.grid().u().print();
+    fluid.grid().v().print();
 //     fluid.grid().f().print();
 //     fluid.grid().g().print();
 //     fluid.grid().rhs().print();
