@@ -1,3 +1,4 @@
+what should the limit parameter be in the dt calculating function
 Should I just store the filereader pointer in fluidsimulator
 make for loops more efficient
 filereader should check if all registered parameters have been read in

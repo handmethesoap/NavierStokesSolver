@@ -18,7 +18,8 @@ class FluidSimulator
 						  Re_(conf.getRealParameter("Re")),
 						  gx_(conf.getRealParameter("gx")),
 						  gy_(conf.getRealParameter("gy")),
-						  safetyfactor_(conf.getRealParameter("safetyfactor")){
+						  safetyfactor_(conf.getRealParameter("safetyfactor")),
+						  normalizationfrequency_(conf.getIntParameter("normalizationfrequency")){
 	grid_.initialiseP(conf.getRealParameter("P_INIT"));
 	grid_.initialiseU(conf.getRealParameter("U_INIT"));
 	grid_.initialiseV(conf.getRealParameter("V_INIT"));
@@ -56,6 +57,7 @@ class FluidSimulator
       real gx_;
       real gy_;
       real safetyfactor_;
+      int normalizationfrequency_;
 
 };
 

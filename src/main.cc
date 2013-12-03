@@ -35,13 +35,14 @@ int main( int argc, char** argv )
     read.registerIntParameter("checkfrequency");
     read.registerRealParameter("safetyfactor");
     read.registerRealParameter("boundary_velocity_N");
-    read.registerStringParameter("boundary_condition_N");
+    //read.registerStringParameter("boundary_condition_N");
     read.registerRealParameter("boundary_velocity_S");
-    read.registerStringParameter("boundary_condition_S");
+    //read.registerStringParameter("boundary_condition_S");
     read.registerRealParameter("boundary_velocity_E");
-    read.registerStringParameter("boundary_condition_E");
+    //read.registerStringParameter("boundary_condition_E");
     //read.registerRealParameter("boundary_velocity_W");
-    read.registerStringParameter("boundary_condition_W");
+    //read.registerStringParameter("boundary_condition_W");
+    read.registerIntParameter("normalizationfrequency");
 
     CHECK_MSG( read.readFile(parameterfile), "Could not read config file");
     read.printParameters();
@@ -50,13 +51,14 @@ int main( int argc, char** argv )
     
     FluidSimulator fluid(read);
     
-    fluid.grid().initialiseU(xy_function);
-    fluid.grid().initialiseV(xy_function);
+    //fluid.grid().initialiseU(sinx_function);
+    //fluid.grid().initialiseV(xy_function);
     
     fluid.grid().u().print();
     fluid.grid().v().print();
 
-    fluid.simulate(1.0);
+    fluid.simulate(read.getRealParameter("dt")*(double(read.getIntParameter("timesteps"))));
+    
     
     fluid.grid().u().print();
     fluid.grid().v().print();

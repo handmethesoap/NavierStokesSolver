@@ -87,7 +87,7 @@ inline int FileReader::getIntParameter(const std::string &key) const
 {
    std::map< const std::string, int >::const_iterator parameter = _intParameters.find(key);
    
-   ASSERT_MSG(parameter != _intParameters.end(),"Failed attempt to access int parameter");
+   ASSERT_MSG(parameter != _intParameters.end(),"Failed attempt to access int parameter " << key);
    
    return parameter->second;
 }
@@ -96,7 +96,7 @@ inline real FileReader::getRealParameter(const std::string &key) const
 {
    std::map< const std::string, real >::const_iterator parameter =_realParameters.find(key);
    
-   ASSERT_MSG(parameter != _realParameters.end(),"Failed attempt to access real parameter");
+   ASSERT_MSG(parameter != _realParameters.end(),"Failed attempt to access real parameter " << key);
    
    return parameter->second;
 }
@@ -105,7 +105,7 @@ inline std::string FileReader::getStringParameter(const std::string &key) const
 {
    std::map< const std::string, std::string >::const_iterator parameter = _stringParameters.find(key);
    
-   ASSERT_MSG(parameter != _stringParameters.end(),"Failed attempt to access string parameter");
+   ASSERT_MSG(parameter != _stringParameters.end(),"Failed attempt to access string parameter " << key);
    
    return parameter->second;
 }

@@ -56,6 +56,9 @@ public:
 
    // Print the whole array ( for debugging purposes )
    void print();
+   
+   //normalise array
+   void normalize();
 
 private:
 

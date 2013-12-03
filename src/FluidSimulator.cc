@@ -4,14 +4,50 @@
 #include <iostream>
 #include <vector>
 
-void FluidSimulator:: simulate             ( real duration              ){
-   computeFG();
-   composeRHS();
-   solve_.solve(grid_);
-   updateVelocities();
+void FluidSimulator:: simulate( real duration ){
+  
+  real time = 0.0;
+  int n = 0;
   real const & limit = 1.0;
-  determineNextDT(limit);
-  refreshBoundaries();
+  
+  while( time < duration ){
+  
+    determineNextDT(limit);
+    refreshBoundaries();
+    computeFG();
+    composeRHS();
+    solve_.solve(grid_);
+    updateVelocities();
+    time = time + dt_;
+    ++n;
+    if(n%normalizationfrequency_ == 0)
+    {
+	grid_.p().normalize();
+    }
+    
+  }
+}
+
+void FluidSimulator:: simulateTimeStepCount( unsigned int nrOfTimeSteps ){
+  
+  real const & limit = 1.0;
+  
+  for(unsigned int steps = 0; steps < nrOfTimeSteps; ++steps){
+  
+    determineNextDT(limit);
+    refreshBoundaries();
+    computeFG();
+    composeRHS();
+    solve_.solve(grid_);
+    updateVelocities();
+    
+    if(steps%normalizationfrequency_ == 0)
+    {
+	grid_.p().normalize();
+    }
+    
+  }
+  
 }
 
 void FluidSimulator::computeFG(){
@@ -199,8 +235,6 @@ void FluidSimulator:: determineNextDT( real const & limit ){
     
     dt_ = safetyfactor_*min;
   }
-  
-  std::cout << dt_ << std::endl;
 }
 
 void FluidSimulator:: refreshBoundaries(void){
