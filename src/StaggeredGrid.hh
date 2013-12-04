@@ -23,17 +23,19 @@ class StaggeredGrid
 {
 public:
    // Constructors to manually create staggered grid
-   StaggeredGrid ( int xSize, int ySize, real dxx, real dyy ) : p_((xSize + 2),(ySize + 2)), 
-								rhs_(xSize, ySize), 
-								u_((xSize + 1),(ySize + 2)),
-								v_((xSize + 2),(ySize + 1)),
-								f_((xSize + 1),(ySize)),
-								g_((xSize),(ySize + 1)),
+   StaggeredGrid ( int _xSize, int _ySize, real dxx, real dyy ) : p_((_xSize + 2),(_ySize + 2)), 
+								rhs_(_xSize, _ySize), 
+								u_((_xSize + 1),(_ySize + 2)),
+								v_((_xSize + 2),(_ySize + 1)),
+								f_((_xSize + 1),(_ySize)),
+								g_((_xSize),(_ySize + 1)),
 								dx_(dxx), 
-								dy_(dyy) {
+								dy_(dyy),
+								xSize_(_xSize),
+								ySize_(_ySize){
 
-      CHECK_MSG(xSize > 0.0, "The x dimension must be positive");
-      CHECK_MSG(ySize > 0.0, "the y dimension must be positive");
+      CHECK_MSG(_xSize > 0.0, "The x dimension must be positive");
+      CHECK_MSG(_ySize > 0.0, "the y dimension must be positive");
       CHECK_MSG(dxx > 0.0, "the size of the element must be positive in the x dimension");
       CHECK_MSG(dyy > 0.0, "the size of the element must be positive in the y dimension");
    }
@@ -46,7 +48,9 @@ public:
 							f_((configuration.getIntParameter("imax") + 1), (configuration.getIntParameter("jmax"))), 
 							g_((configuration.getIntParameter("imax")), (configuration.getIntParameter("jmax") + 1)), 
 							dx_(double(configuration.getIntParameter("xlength")) / double(configuration.getIntParameter("imax"))),
-							dy_(double(configuration.getIntParameter("ylength")) / double(configuration.getIntParameter("jmax"))){
+							dy_(double(configuration.getIntParameter("ylength")) / double(configuration.getIntParameter("jmax"))),
+							xSize_(configuration.getIntParameter("imax")),
+							ySize_(configuration.getIntParameter("jmax")){
       
 	CHECK_MSG(configuration.getIntParameter("imax") > 0, "the number of elements in the x direction must be greater than zero");
 	CHECK_MSG(configuration.getIntParameter("jmax") > 0, "the number of elements in the y direction must be greater than zero");
@@ -73,6 +77,9 @@ public:
    real dx() const { return dx_; }
    real dy() const { return dy_; }
    
+   int xSize() const { return xSize_; }
+   int ySize() const { return ySize_; }
+   
    void initialiseP(real(* initialiser)(real, real));
    void initialiseRHS(real(* initialiser)(real, real));
    void initialiseU(real(* initialiser)(real, real));
@@ -98,6 +105,9 @@ protected:
 
    real dx_;   //< distance between two grid points in x direction
    real dy_;   //< distance between two grid points in y direction
+   
+   int xSize_;
+   int ySize_;
 };
 
 

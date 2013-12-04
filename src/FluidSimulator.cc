@@ -1,4 +1,5 @@
 #include "FluidSimulator.hh"
+#include "VTKWriter.hh"
 #include "Debug.hh"
 #include <cmath>
 #include <iostream>
@@ -10,12 +11,15 @@ void FluidSimulator:: simulate( real duration ){
   int n = 0;
   real const & limit = 1.0;
   
+  VTKWriter writer(grid_, "vtkoutput/flusim" );
+  
   while( time < duration ){
   
     determineNextDT(limit);
     refreshBoundaries();
     computeFG();
     composeRHS();
+    //grid_.rhs().print();
     solve_.solve(grid_);
     updateVelocities();
     time = time + dt_;
@@ -25,6 +29,8 @@ void FluidSimulator:: simulate( real duration ){
 	grid_.p().normalize();
     }
     
+    writer.write();
+    std::cout << "time = " << time << "; n = " << n << std::endl;
   }
 }
 
@@ -37,7 +43,14 @@ void FluidSimulator:: simulateTimeStepCount( unsigned int nrOfTimeSteps ){
     determineNextDT(limit);
     refreshBoundaries();
     computeFG();
+    std::cout << "-----------------------" << std::endl;
+    grid_.u().print();
+    grid_.v().print();
+    grid_.f().print();
+    grid_.g().print();
+    std::cout << "-----------------------" << std::endl;
     composeRHS();
+    //grid_.rhs().print();
     solve_.solve(grid_);
     updateVelocities();
     
@@ -45,7 +58,7 @@ void FluidSimulator:: simulateTimeStepCount( unsigned int nrOfTimeSteps ){
     {
 	grid_.p().normalize();
     }
-    
+    std::cout << " steps = " << steps << std::endl;
   }
   
 }
@@ -66,8 +79,8 @@ void FluidSimulator::computeFG(){
 
   //set boundary values of f
   for(int j = 0; j < grid_.f().getSize(1); ++j){
-    grid_.f()(0,j) = grid_.u()(0,j);
-    grid_.f()(grid_.f().getSize(0)-1,j) = grid_.u()(grid_.f().getSize(0)-1,j);
+    grid_.f()(0,j) = grid_.u()(0,j+1);
+    grid_.f()(grid_.f().getSize(0)-1,j) = grid_.u()(grid_.f().getSize(0)-1,j+1);
   }
   //calculate f
   for(int i = 1; i < grid_.f().getSize(0)-1; ++i){
@@ -103,27 +116,26 @@ void FluidSimulator::computeFG(){
 					   * (grid_.u()(i,j-1) + grid_.u()(i,j)) 
 					   / 4.0 
 					 )
-	     + ( gamma_*1.0/grid_.dy() ) * (   std::abs( (grid_.v()(i,j) + grid_.v()(i+1,j)) )
-					   *             (grid_.u()(i,j) - grid_.u()(i,j+1)) 
+	    + ( gamma_*1.0/grid_.dy() ) * (   std::abs( (grid_.v()(i,j) + grid_.v()(i+1,j)) )
+					   *            (grid_.u()(i,j) - grid_.u()(i,j+1)) 
 					   / 4.0
-					   - std::abs( (grid_.v()(i,j-1) + grid_.v()(i+1,j-1)) )
-					   *           (grid_.u()(i,j-1) - grid_.u()(i,j)) 
+					   -  std::abs( (grid_.v()(i,j-1) + grid_.v()(i+1,j-1)) )
+					   *            (grid_.u()(i,j-1) - grid_.u()(i,j)) 
 					   / 4.0 
-					 );
+					  );
 	     
-      grid_.f()(i,j-1) = grid_.u()(i,j) + dt_*( 1.0/Re_*(d2udx2 + d2udy2) - du2dx - duvdy + gx_);
+      grid_.f()(i,j-1) = grid_.u()(i,j) + dt_*( (1.0/Re_)*(d2udx2 + d2udy2) - du2dx - duvdy + gx_);
     }
   }
   
   //set boundary values of g
   for(int i = 0; i < grid_.g().getSize(0); ++i){
-    grid_.g()(i,0) = grid_.v()(i,0);
-    grid_.g()(i,grid_.g().getSize(1)-1) = grid_.v()(i, grid_.g().getSize(1)-1);
+    grid_.g()(i,0) = grid_.v()(i+1,0);
+    grid_.g()(i,grid_.g().getSize(1)-1) = grid_.v()(i+1, grid_.g().getSize(1)-1);
   }
   //calculate g
   for(int i = 1; i < grid_.g().getSize(0) + 1; ++i){
-    for(int j = 1; j < grid_.g().getSize(1) - 1; ++j){//     fluid.grid().u().print();
-//     fluid.grid().v().print();
+    for(int j = 1; j < grid_.g().getSize(1) - 1; ++j){
          
       //calculate d2v/dx2
       d2vdx2 = ( grid_.v()(i+1,j) - 2.0*grid_.v()(i,j) + grid_.v()(i-1,j) ) / dx2;
@@ -163,7 +175,7 @@ void FluidSimulator::computeFG(){
 					   / 4.0 
 					 );
 	     
-      grid_.g()(i-1,j) = grid_.v()(i,j) + dt_*( 1.0/Re_*(d2vdx2 + d2vdy2) - dv2dy - duvdx + gx_);
+      grid_.g()(i-1,j) = grid_.v()(i,j) + dt_*( (1.0/Re_)*(d2vdx2 + d2vdy2) - dv2dy - duvdx + gy_);
     }
   }
   
@@ -233,8 +245,9 @@ void FluidSimulator:: determineNextDT( real const & limit ){
       min =  grid_.dy()/v_max;
     } 
     
-    dt_ = safetyfactor_*min;
+    dt_ = 0.02;//safetyfactor_*min;##################################################################################################################################################################################
   }
+  std::cout << "dt = " << dt_ << std::endl;
 }
 
 void FluidSimulator:: refreshBoundaries(void){

@@ -50,8 +50,8 @@ void VTKWriter::write()
       for ( int j = 0; j < grid_.ySize (); ++j )
          for ( int i = 0; i < grid_.xSize (); ++i )
          {
-            const real u = 0.5 * ( grid_.u() ( i, j )  + grid_.u() ( i+1, j ) );
-            const real v = 0.5 * ( grid_.v() ( i, j )  + grid_.v() ( i, j+1 ) );
+            const real u = 0.5 * ( grid_.u() ( i, j+1 )  + grid_.u() ( i+1, j+1 ) );
+            const real v = 0.5 * ( grid_.v() ( i+1, j )  + grid_.v() ( i+1, j+1 ) );
             fileStream << u << " " << v << " " << " 0\n";
          }
 

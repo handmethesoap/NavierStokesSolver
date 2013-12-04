@@ -36,6 +36,11 @@ real sinx_function(real x, real y){
   return value;
 }
 
+real siny_function(real x, real y){
+  real value = sin(2*pi*x);
+  return value;
+}
+
 real rand_function(real x, real y){
   real value = rand() % 100;
   return value;
