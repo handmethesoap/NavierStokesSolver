@@ -19,10 +19,10 @@ void FluidSimulator:: simulate( real duration ){
     refreshBoundaries();
     computeFG();
     composeRHS();
-    //grid_.rhs().print();
     solve_.solve(grid_);
     updateVelocities();
     time = time + dt_;
+    std::cout << "time = " << time << std::endl;
     ++n;
     if(n%normalizationfrequency_ == 0)
     {
@@ -30,7 +30,6 @@ void FluidSimulator:: simulate( real duration ){
     }
     
     writer.write();
-    std::cout << "time = " << time << "; n = " << n << std::endl;
   }
 }
 
@@ -43,14 +42,7 @@ void FluidSimulator:: simulateTimeStepCount( unsigned int nrOfTimeSteps ){
     determineNextDT(limit);
     refreshBoundaries();
     computeFG();
-    std::cout << "-----------------------" << std::endl;
-    grid_.u().print();
-    grid_.v().print();
-    grid_.f().print();
-    grid_.g().print();
-    std::cout << "-----------------------" << std::endl;
     composeRHS();
-    //grid_.rhs().print();
     solve_.solve(grid_);
     updateVelocities();
     
@@ -58,7 +50,6 @@ void FluidSimulator:: simulateTimeStepCount( unsigned int nrOfTimeSteps ){
     {
 	grid_.p().normalize();
     }
-    std::cout << " steps = " << steps << std::endl;
   }
   
 }
@@ -215,9 +206,7 @@ void FluidSimulator:: determineNextDT( real const & limit ){
   
   if(safetyfactor_ > 0.0)
   {
-    min = (Re_/2.0)*(1.0/(1.0/(grid_.dx()*grid_.dx()) + 1.0/(1.0/(grid_.dy()*grid_.dy()))));
-    
-    std::cout << "min = " << min << std::endl;
+    min = (Re_/2.0)*(1.0/( 1.0/(grid_.dx()*grid_.dx()) + 1.0/(grid_.dy()*grid_.dy()) ));
     
     for( int i = 0; i < grid_.u().getSize(0); ++i ){
       for( int j = 0; j < grid_.u().getSize(1); ++j){
@@ -226,7 +215,6 @@ void FluidSimulator:: determineNextDT( real const & limit ){
 	}
       }
     }
-    std::cout << "u_max = " << u_max << std::endl;
     
     if( grid_.dx()/u_max < min ){
       min =  grid_.dx()/u_max;
@@ -234,20 +222,18 @@ void FluidSimulator:: determineNextDT( real const & limit ){
     
     for( int i = 0; i < grid_.v().getSize(0); ++i ){
       for( int j = 0; j < grid_.v().getSize(1); ++j){
-	if( std::abs(grid_.v()(i,j)) > v_max )void refreshBoundaries();{
+	if( std::abs(grid_.v()(i,j)) > v_max ){
 	  v_max = std::abs(grid_.v()(i,j));
 	}
       }
     }
-    std::cout << "vmax = " << v_max << std::endl;
     
     if( grid_.dy()/v_max < min ){
       min =  grid_.dy()/v_max;
     } 
     
-    dt_ = 0.02;//safetyfactor_*min;##################################################################################################################################################################################
+    dt_ = safetyfactor_*min;
   }
-  std::cout << "dt = " << dt_ << std::endl;
 }
 
 void FluidSimulator:: refreshBoundaries(void){
@@ -261,11 +247,11 @@ void FluidSimulator:: refreshBoundaries(void){
   static const std::vector< std::string> boundary_velocity_labels = {"boundary_velocity_N", "boundary_velocity_E", "boundary_velocity_S", "boundary_velocity_W"};
 
   
-  std::vector<real> tangential_velocities (4); //tangential_velocity_N, tangential_velocity_E, tangential_velocity_S, tangential_velocity_W;
-  std::vector<real> normal_velocities (4); //normal_velocity_N, normal_velocity_E, normal_velocity_S, normal_velocity_W;
+  std::vector<real> tangential_velocities (4); 
+  std::vector<real> normal_velocities (4);
   
-  std::vector<real> outflow_constants (4); //outflow_constant_N, outflow_constant_E, outflow_constant_S, outflow_constant_W;
-  std::vector<real> averaging_constants (4); //real averaging_constant_N, averaging_constant_E, averaging_constant_S, averaging_constant_W;
+  std::vector<real> outflow_constants (4);
+  std::vector<real> averaging_constants (4);
   
   for( int direction = 0; direction < 4; ++direction ){
   
@@ -280,7 +266,6 @@ void FluidSimulator:: refreshBoundaries(void){
       }
       else{
 	tangential_velocities[direction] = conf_.getRealParameter(boundary_velocity_labels[direction]);
-	std::cout << tangential_velocities[direction] << std::endl;
       }
       
     }

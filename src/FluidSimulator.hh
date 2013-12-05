@@ -40,10 +40,12 @@ class FluidSimulator
       
       void computeFG();
       void refreshBoundaries();
-  private:    
-      
       void composeRHS();
       void updateVelocities();
+  private:    
+      
+      
+      
       void determineNextDT( real const & limit );  //What is limit supposed to do?
       
       

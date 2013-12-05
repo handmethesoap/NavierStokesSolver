@@ -41,33 +41,11 @@ int main( int argc, char** argv )
     read.registerIntParameter("checkfrequency");
 
     CHECK_MSG( read.readFile(parameterfile), "Could not read config file");
-    read.printParameters();
-    
-    
+    read.printParameters();    
     
     FluidSimulator fluid(read);
     
-    //fluid.grid().initialiseU(sinx_function);
-    //fluid.grid().initialiseV(xy_function);
-    
-    fluid.grid().u().print();
-    fluid.grid().v().print();
-    fluid.grid().rhs().print();
-    
-    unsigned int steps = 5;
-    
-    fluid.simulateTimeStepCount(steps);
-    //fluid.simulate(read.getRealParameter("dt")*(double(read.getIntParameter("timesteps"))));
-    
-    
-    fluid.grid().u().print();
-    fluid.grid().v().print();
-//     fluid.grid().f().print();
-//     fluid.grid().g().print();
-//     fluid.grid().rhs().print();
-
-    
-
+    fluid.simulate(read.getRealParameter("dt")*(double(read.getIntParameter("timesteps"))));
 
     return 0;
 }

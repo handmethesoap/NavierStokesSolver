@@ -37,7 +37,7 @@ real sinx_function(real x, real y){
 }
 
 real siny_function(real x, real y){
-  real value = sin(2*pi*x);
+  real value = sin(2*pi*y);
   return value;
 }
 
