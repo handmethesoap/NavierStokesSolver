@@ -47,13 +47,17 @@ void  contiguousMemoryTest()
 
 int main( )
 {
-   std::cout << "Copy Test: ";
+  
+   std::cout << "########## ARRAY TEST #########" << std::endl << std::endl;
+   
+   std::cout << "+ Testing copy" << std::endl;
    copyTest();
-   std::cout << "OK" << std::endl;
+   std::cout << "     PASSED" << std::endl;
 
-   std::cout << "Contiguous Memory Test: ";
+   std::cout << "+ Testing contiguous memory" << std::endl;
    contiguousMemoryTest();
-   std::cout << "OK" << std::endl;
+   std::cout << "     PASSED" << std::endl;
 
+   std::cout << std::endl << "########## ARRAY TEST PASSED #########" << std::endl << std::endl;
    return 0;
 }

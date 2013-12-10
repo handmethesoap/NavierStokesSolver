@@ -111,19 +111,19 @@ void StaggeredGrid::normalizeP(){
   real average;
   
 
-  for( int y = 1; y <  ySize_ - 1; ++y )
+  for( int y = 1; y <=  ySize_ ; ++y )
   {
-    for( int x = 1; x < xSize_ - 1; ++x ) 
+    for( int x = 1; x <= xSize_; ++x ) 
     {
       sum += p_(x, y);
     }
   }
   
-  average = sum / (ySize_*xSize_);
+  average = sum / double(ySize_*xSize_);
   
-  for( int y = 1; y < ySize_ - 1; ++y )
+  for( int y = 1; y <= ySize_ ; ++y )
   {
-    for( int x = 1; x < xSize_ - 1; ++x ) 
+    for( int x = 1; x <= xSize_ ; ++x ) 
     {
       p_(x, y) = p_(x, y) - average;
     }
