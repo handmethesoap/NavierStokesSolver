@@ -58,7 +58,12 @@ void SORSolver::fillBoundary( StaggeredGrid & grid ){
     grid.p()(x,0) = grid.p()(x,1);
     grid.p()(x,grid.p().getSize(1)-1) = grid.p()(x,grid.p().getSize(1)-2);
   }
-
+  
+  //fill corner points to make me feel better
+  grid.p()(0,0) = grid.p()(1,1);
+  grid.p()(0, grid.p().getSize(1) - 1) = grid.p()(1,grid.p().getSize(1) - 2);
+  grid.p()(grid.p().getSize(0) - 1, grid.p().getSize(1) - 1) = grid.p()(grid.p().getSize(0) - 2,grid.p().getSize(1) - 2);
+  grid.p()(grid.p().getSize(0) - 1, 0) = grid.p()(grid.p().getSize(0) - 2, 1);
   
 }
   

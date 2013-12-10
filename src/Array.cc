@@ -110,37 +110,6 @@ void Array::print()
   }
 }
 
-void Array::normalize()
-{
-  
-  real sum = 0.0;
-  real average;
-  
-  for( int z = 0; z < zSize_; ++z )
-  {
-    for( int y = ySize_ - 1; y >= 0; --y )
-    {
-      for( int x = 0; x < xSize_; ++x ) 
-      {
-	sum += (*this)(x, y, z);
-      }
-    }
-  }
-  
-  average = sum / (zSize_*ySize_*xSize_);
-  
-  for( int z = 0; z < zSize_; ++z )
-  {
-    for( int y = ySize_ - 1; y >= 0; --y )
-    {
-      for( int x = 0; x < xSize_; ++x ) 
-      {
-	(*this)(x, y, z) = (*this)(x, y, z) - average;
-      }
-    }
-  }
-}
-
 int Array::getSize( int dimension ) const
 {
    if( dimension == 0 )

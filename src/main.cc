@@ -6,6 +6,8 @@
 #include "initialisers.hh"
 #include "FluidSimulator.hh"
 #include <iostream>
+#include <stdlib.h>
+#include <sys/time.h>
 
 
 int main( int argc, char** argv )
@@ -13,7 +15,13 @@ int main( int argc, char** argv )
     CHECK_MSG(argc == 2,"The command line requires a single input of the parameter file name");
 
     std::string parameterfile = argv[1];
+    
+    timeval start;
+    timeval end;
+    gettimeofday(&start, NULL);
 
+    long int operation_time = 0;
+    
     FileReader read;
     
     read.registerIntParameter("xlength");
@@ -39,6 +47,7 @@ int main( int argc, char** argv )
     read.registerRealParameter("boundary_velocity_E");
     read.registerIntParameter("normalizationfrequency");
     read.registerIntParameter("checkfrequency");
+    read.registerIntParameter("outputinterval");
 
     CHECK_MSG( read.readFile(parameterfile), "Could not read config file");
     read.printParameters();    
@@ -46,6 +55,10 @@ int main( int argc, char** argv )
     FluidSimulator fluid(read);
     
     fluid.simulate(read.getRealParameter("dt")*(double(read.getIntParameter("timesteps"))));
+    
+    gettimeofday(&end, NULL);
+    operation_time = (end.tv_sec - start.tv_sec)*1000000 + end.tv_usec - start.tv_usec;
+    std::cout << "Operating time (us): " << operation_time << std::endl;
 
     return 0;
 }

@@ -86,6 +86,7 @@ public:
    void initialiseV(real(* initialiser)(real, real));
    void initialiseF(real(* initialiser)(real, real));
    void initialiseG(real(* initialiser)(real, real));
+
    
    void initialiseP(real value);
    void initialiseRHS(real value);
@@ -93,8 +94,9 @@ public:
    void initialiseV(real value);
    void initialiseF(real value);
    void initialiseG(real value);
+      
+   void normalizeP(void);
   
-
 protected:
    Array p_;   //< pressure field
    Array rhs_; //< right hand side of the pressure equation

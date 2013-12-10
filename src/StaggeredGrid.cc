@@ -104,3 +104,28 @@ void StaggeredGrid::initialiseG(real value){
     }
   }
 }
+
+void StaggeredGrid::normalizeP(){
+  
+  real sum = 0.0;
+  real average;
+  
+
+  for( int y = 1; y <  ySize_ - 1; ++y )
+  {
+    for( int x = 1; x < xSize_ - 1; ++x ) 
+    {
+      sum += p_(x, y);
+    }
+  }
+  
+  average = sum / (ySize_*xSize_);
+  
+  for( int y = 1; y < ySize_ - 1; ++y )
+  {
+    for( int x = 1; x < xSize_ - 1; ++x ) 
+    {
+      p_(x, y) = p_(x, y) - average;
+    }
+  }
+}

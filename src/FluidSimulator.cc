@@ -15,30 +15,49 @@ void FluidSimulator:: simulate( real duration ){
   
   while( time < duration ){
   
+    if(n%normalizationfrequency_ == 0)
+    {
+	grid_.normalizeP();
+    }
+    if(n%outputinterval_ == 0)
+    {
+      writer.write();
+    }
+    
     determineNextDT(limit);
     refreshBoundaries();
     computeFG();
     composeRHS();
     solve_.solve(grid_);
     updateVelocities();
+    
     time = time + dt_;
     std::cout << "time = " << time << std::endl;
-    ++n;
-    if(n%normalizationfrequency_ == 0)
-    {
-	grid_.p().normalize();
-    }
     
-    writer.write();
+    ++n;
+    
   }
 }
 
 void FluidSimulator:: simulateTimeStepCount( unsigned int nrOfTimeSteps ){
   
   real const & limit = 1.0;
+  real time = 0.0;
+  
+  VTKWriter writer(grid_, "vtkoutput/flusim" );
   
   for(unsigned int steps = 0; steps < nrOfTimeSteps; ++steps){
-  
+    
+    
+    if(steps%normalizationfrequency_ == 0)
+    {
+	grid_.normalizeP();
+    }
+    if(steps%outputinterval_ == 0)
+    {
+      writer.write();
+    }
+    
     determineNextDT(limit);
     refreshBoundaries();
     computeFG();
@@ -46,10 +65,9 @@ void FluidSimulator:: simulateTimeStepCount( unsigned int nrOfTimeSteps ){
     solve_.solve(grid_);
     updateVelocities();
     
-    if(steps%normalizationfrequency_ == 0)
-    {
-	grid_.p().normalize();
-    }
+    time += dt_;
+    std::cout << "time = " << time << "; steps = " << steps << std::endl;
+    
   }
   
 }
