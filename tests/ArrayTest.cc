@@ -9,7 +9,7 @@ void copyTest()
    const int size = 10;
 
    // Fill single array...
-   Array arr (size);
+   Array<real> arr (size);
    for ( int i = 0; i<size; ++i )
       arr(i) = i;
 
@@ -19,7 +19,7 @@ void copyTest()
 
 
    // create a copy of the array, and check if values are the same
-   Array arrCopy (arr);
+   Array<real> arrCopy (arr);
    for ( int i = 0; i<size; ++i )
       CHECK( arrCopy(i) == i );
 
@@ -38,7 +38,7 @@ void copyTest()
 
 void  contiguousMemoryTest()
 {
-   Array arr ( 10, 5 );
+   Array<real> arr ( 10, 5 );
 
    size_t memDifference =  & ( arr (9,4 ) ) - & ( arr(0,0) );
    CHECK( memDifference == 10*5 - 1 );

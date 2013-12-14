@@ -83,8 +83,11 @@ void FluidSimulator::computeFG(){
   real dv2dy;
   real duvdx;
   
-  real dx2 = grid_.dx()*grid_.dx();
-  real dy2 = grid_.dy()*grid_.dy();
+  static real dx2 = 1.0/(grid_.dx()*grid_.dx());
+  static real dy2 = 1.0/(grid_.dy()*grid_.dy());
+  static real invdx = 1.0/grid_.dx();
+  static real invdy = 1.0/grid_.dy();
+  static real invRe = 1.0/Re_;
 
   //set boundary values of f
   for(int j = 0; j < grid_.f().getSize(1); ++j){
@@ -95,45 +98,52 @@ void FluidSimulator::computeFG(){
   for(int i = 1; i < grid_.f().getSize(0)-1; ++i){
     for(int j = 1; j < grid_.f().getSize(1)+1; ++j){
       
-      //calculate d2u/dx2
-      d2udx2 = ( grid_.u()(i+1,j) - 2.0*grid_.u()(i,j) + grid_.u()(i-1,j) ) / dx2;
-      
-      //calculate d2u/dy2
-      d2udy2 = ( grid_.u()(i,j+1) - 2.0*grid_.u()(i,j) + grid_.u()(i,j-1) ) / dy2;
-      
-      //calculate du2dx
-      du2dx =  ( 1.0/grid_.dx() )     * (    (grid_.u()(i,j) + grid_.u()(i+1,j))
-					   * (grid_.u()(i,j) + grid_.u()(i+1,j)) 
-					   / 4.0
-					   - (grid_.u()(i-1,j) + grid_.u()(i,j))
-					   * (grid_.u()(i-1,j) + grid_.u()(i,j)) 
-					   / 4.0 
-					 )
-	     + ( gamma_*1.0/grid_.dx() ) * (   std::abs( (grid_.u()(i,j) + grid_.u()(i+1,j)) )
-					   *             (grid_.u()(i,j) - grid_.u()(i+1,j)) 
-					   / 4.0
-					   - std::abs( (grid_.u()(i-1,j) + grid_.u()(i,j)) )
-					   *           (grid_.u()(i-1,j) - grid_.u()(i,j)) 
-					   / 4.0 
-					 );
-	     
-      //calculate duv/dy
-      duvdy =  ( 1.0/grid_.dy() )     * (    (grid_.v()(i,j) + grid_.v()(i+1,j))
-					   * (grid_.u()(i,j) + grid_.u()(i,j+1)) 
-					   / 4.0
-					   - (grid_.v()(i,j-1) + grid_.v()(i+1,j-1))
-					   * (grid_.u()(i,j-1) + grid_.u()(i,j)) 
-					   / 4.0 
-					 )
-	    + ( gamma_*1.0/grid_.dy() ) * (   std::abs( (grid_.v()(i,j) + grid_.v()(i+1,j)) )
-					   *            (grid_.u()(i,j) - grid_.u()(i,j+1)) 
-					   / 4.0
-					   -  std::abs( (grid_.v()(i,j-1) + grid_.v()(i+1,j-1)) )
-					   *            (grid_.u()(i,j-1) - grid_.u()(i,j)) 
-					   / 4.0 
+      if( grid_.isFluid(i,j) && grid_.isFluid(i+1,j) ){
+       
+ 	//calculate d2u/dx2
+ 	d2udx2 = ( grid_.u(i+1,j, WEST) - 2.0*grid_.u()(i,j) + grid_.u(i-1,j, EAST) ) * dx2;
+// 	
+// 	//calculate d2u/dy2
+ 	d2udy2 = ( grid_.u(i,j+1, SOUTH) - 2.0*grid_.u()(i,j) + grid_.u(i,j-1, NORTH) ) * dy2;
+// 	
+// 	//calculate du2dx
+	du2dx =  ( invdx )     * (    (grid_.u()(i,j) + grid_.u(i+1,j, WEST))
+					    * (grid_.u()(i,j) + grid_.u(i+1,j, WEST)) 
+					    * 0.25
+					    - (grid_.u(i-1,j, EAST) + grid_.u()(i,j))
+					    * (grid_.u(i-1,j, EAST) + grid_.u()(i,j)) 
+					    * 0.25 
+					  )
+	      + ( gamma_*invdx ) * (   std::abs( (grid_.u()(i,j) + grid_.u(i+1,j, WEST)) )
+					    *             (grid_.u()(i,j) - grid_.u(i+1,j, WEST)) 
+					    * 0.25
+					    - std::abs( (grid_.u(i-1,j, EAST) + grid_.u()(i,j)) )
+					    *           (grid_.u(i-1,j, EAST) - grid_.u()(i,j)) 
+					    * 0.25 
 					  );
-	     
-      grid_.f()(i,j-1) = grid_.u()(i,j) + dt_*( (1.0/Re_)*(d2udx2 + d2udy2) - du2dx - duvdy + gx_);
+// 	      
+// 	//calculate duv/dy
+	duvdy =  ( invdy )     * (    (grid_.v(i,j) + grid_.v(i+1,j, WEST))
+					    * (grid_.u()(i,j) + grid_.u(i,j+1, SOUTH)) 
+					    * 0.25
+					    - (grid_.v(i,j-1, NORTH) + grid_.v(i+1,j-1, WEST))
+					    * (grid_.u(i,j-1, NORTH) + grid_.u()(i,j)) 
+					    * 0.25 
+					  )
+	      + ( gamma_*invdy ) * (   std::abs( (grid_.v(i,j) + grid_.v(i+1,j, WEST)) )
+					    *            (grid_.u()(i,j) - grid_.u(i,j+1, SOUTH)) 
+					    * 0.25
+					    -  std::abs( (grid_.v(i,j-1, NORTH) + grid_.v(i+1,j-1, WEST)) )
+					    *            (grid_.u(i,j-1, NORTH) - grid_.u()(i,j)) 
+					    * 0.25 
+					    );
+	      
+ 	grid_.f()(i,j-1) = grid_.u()(i,j) + dt_*( (invRe)*(d2udx2 + d2udy2) - du2dx - duvdy + gx_);
+      }
+      else
+      {
+	grid_.f()(i,j-1) = 0.0;
+      }
     }
   }
   
@@ -146,45 +156,54 @@ void FluidSimulator::computeFG(){
   for(int i = 1; i < grid_.g().getSize(0) + 1; ++i){
     for(int j = 1; j < grid_.g().getSize(1) - 1; ++j){
          
-      //calculate d2v/dx2
-      d2vdx2 = ( grid_.v()(i+1,j) - 2.0*grid_.v()(i,j) + grid_.v()(i-1,j) ) / dx2;
-      
-      //calculate d2v/dy2
-      d2vdy2 = ( grid_.v()(i,j+1) - 2.0*grid_.v()(i,j) + grid_.v()(i,j-1) ) / dy2;
-      
-      //calculate duv/dx
-      duvdx =  ( 1.0/grid_.dx() )     * (    (grid_.u()(i,j) + grid_.u()(i,j+1))
-					   * (grid_.v()(i,j) + grid_.v()(i+1,j)) 
-					   / 4.0
-					   - (grid_.u()(i-1,j) + grid_.u()(i-1,j+1))
-					   * (grid_.v()(i-1,j) + grid_.v()(i,j)) 
-					   / 4.0 
-					 )
-	     + ( gamma_*1.0/grid_.dx() ) * (   std::abs( (grid_.u()(i,j) + grid_.u()(i,j+1)) )
-					   *             (grid_.v()(i,j) - grid_.v()(i+1,j)) 
-					   / 4.0
-					   - std::abs( (grid_.u()(i-1,j) + grid_.u()(i-1,j+1)) )
-					   *           (grid_.v()(i-1,j) - grid_.v()(i,j)) 
-					   / 4.0 
-					 );
-    
-      //calculate dv2/dy
-      dv2dy =  ( 1.0/grid_.dy() )      * (   (grid_.v()(i,j) + grid_.v()(i,j+1))
-					   * (grid_.v()(i,j) + grid_.v()(i,j+1)) 
-					   / 4.0
-					   - (grid_.v()(i,j-1) + grid_.v()(i,j))
-					   * (grid_.v()(i,j-1) + grid_.v()(i,j)) 
-					   / 4.0 
-					 )
-	     + ( gamma_*1.0/grid_.dy() ) * (   std::abs( (grid_.v()(i,j) + grid_.v()(i,j+1)) )
-					   *             (grid_.v()(i,j) - grid_.v()(i,j+1)) 
-					   / 4.0
-					   - std::abs( (grid_.v()(i,j-1) + grid_.v()(i,j)) )
-					   *           (grid_.v()(i,j-1) - grid_.v()(i,j)) 
-					   / 4.0 
-					 );
-	     
-      grid_.g()(i-1,j) = grid_.v()(i,j) + dt_*( (1.0/Re_)*(d2vdx2 + d2vdy2) - dv2dy - duvdx + gy_);
+      //if g entry is not on a obstacle boundary calculate its value
+      if( grid_.isFluid(i,j) && grid_.isFluid(i,j+1) ){
+	
+
+	//calculate d2v/dx2
+	d2vdx2 = ( grid_.v(i+1,j, WEST) - 2.0*grid_.v()(i,j) + grid_.v(i-1,j, EAST) ) * dx2;
+// 	
+// 	//calculate d2v/dy2
+ 	d2vdy2 = ( grid_.v(i,j+1, SOUTH) - 2.0*grid_.v()(i,j) + grid_.v(i,j-1, NORTH) ) * dy2;
+// 	
+	//calculate duv/dx
+	duvdx =  ( invdx )     * (    (grid_.u(i,j) + grid_.u(i,j+1, SOUTH))
+					    * (grid_.v()(i,j) + grid_.v(i+1,j, WEST)) 
+					    * 0.25
+					    - (grid_.u(i-1,j, EAST) + grid_.u(i-1,j+1,SOUTH))
+					    * (grid_.v(i-1,j, EAST) + grid_.v()(i,j)) 
+					    * 0.25 
+					  )
+	      + ( gamma_*invdx ) * (   std::abs( (grid_.u(i,j) + grid_.u(i,j+1, SOUTH)) )
+					    *             (grid_.v()(i,j) - grid_.v(i+1,j, WEST)) 
+					    * 0.25
+					    - std::abs( (grid_.u(i-1,j, EAST) + grid_.u(i-1,j+1, SOUTH)) )
+					    *           (grid_.v(i-1,j, EAST) - grid_.v()(i,j)) 
+					    * 0.25 
+					  );
+//       
+// 	//calculate dv2/dy
+	dv2dy =  ( invdy )      * (   (grid_.v()(i,j) + grid_.v(i,j+1, SOUTH))
+					    * (grid_.v()(i,j) + grid_.v(i,j+1, SOUTH)) 
+					    * 0.25
+					    - (grid_.v(i,j-1, NORTH) + grid_.v()(i,j))
+					    * (grid_.v(i,j-1, NORTH) + grid_.v()(i,j)) 
+					    * 0.25 
+					  )
+	      + ( gamma_*invdy ) * (   std::abs( (grid_.v()(i,j) + grid_.v(i,j+1, SOUTH)) )
+					    *             (grid_.v()(i,j) - grid_.v(i,j+1, SOUTH)) 
+					    * 0.25
+					    - std::abs( (grid_.v(i,j-1, NORTH) + grid_.v()(i,j)) )
+					    *           (grid_.v(i,j-1, NORTH) - grid_.v()(i,j)) 
+					    * 0.25 
+					  );
+// 	      
+ 	grid_.g()(i-1,j) = grid_.v()(i,j) + dt_*( (invRe)*(d2vdx2 + d2vdy2) - dv2dy - duvdx + gy_);
+
+      }
+      else{
+	grid_.g()(i-1,j) = 0.0;
+      }
     }
   }
   
@@ -192,9 +211,18 @@ void FluidSimulator::computeFG(){
 
 void FluidSimulator:: composeRHS(){
   
+  static real invdt = 1.0/dt_;
+  static real invdx = 1.0/grid_.dx();
+  static real invdy = 1.0/grid_.dy();
+  
   for( int i = 0; i < grid_.rhs().getSize(0); ++i ){
     for( int j = 0; j < grid_.rhs().getSize(1); ++j ){
-      grid_.rhs()(i,j) = ( 1.0/dt_ ) * ( ( grid_.f()(i+1,j) - grid_.f()(i,j) ) / grid_.dx() + ( grid_.g()(i,j+1) - grid_.g()(i,j) ) / grid_.dy() );
+      if( grid_.isFluid(i+1,j+1) ){
+	grid_.rhs()(i,j) = ( invdt ) * ( ( grid_.f()(i+1,j) - grid_.f()(i,j) ) * invdx + ( grid_.g()(i,j+1) - grid_.g()(i,j) ) * invdy );
+      }
+      else{
+	grid_.rhs()(i,j) = 0.0;
+      }
     }
   }
 
@@ -202,15 +230,18 @@ void FluidSimulator:: composeRHS(){
 
 void FluidSimulator:: updateVelocities(){
 
+  static real dt_dx = dt_/grid_.dx();
+  static real dt_dy = dt_/grid_.dy();
+  
   for( int i = 1; i < (grid_.u().getSize(0) - 1); ++i ){
       for( int j = 1; j <  (grid_.u().getSize(1) - 1); ++j ){
-	grid_.u()(i,j) = grid_.f()(i,j-1) - (dt_/grid_.dx())*( grid_.p()(i+1,j) - grid_.p()(i,j) );
+	grid_.u()(i,j) = grid_.f()(i,j-1) - (dt_dx)*( grid_.p()(i+1,j) - grid_.p()(i,j) );
       }
   }
 
   for( int i = 1; i < (grid_.v().getSize(0) - 1); ++i ){
       for( int j = 1; j <  (grid_.v().getSize(1) - 1); ++j ){
-	grid_.v()(i,j) = grid_.g()(i-1,j) - (dt_/grid_.dy())*( grid_.p()(i,j+1) - grid_.p()(i,j) );
+	grid_.v()(i,j) = grid_.g()(i-1,j) - (dt_dy)*( grid_.p()(i,j+1) - grid_.p()(i,j) );
       }
   }
   

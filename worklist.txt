@@ -1,9 +1,7 @@
 what should the limit parameter be in the dt calculating function
 Should I just store the filereader pointer in fluidsimulator
-make for loops more efficient
 filereader should check if all registered parameters have been read in
 in the case of inflow do we assume 0 tangential velocity? as there is no parameter defined for passing it from the parameter file
-include direction of flow in border values
 do something about error when declaring border velocity variable but not filling it
 warning for variables not found in parameter file
 multigrid solver for p

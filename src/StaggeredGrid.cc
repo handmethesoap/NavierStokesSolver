@@ -105,6 +105,16 @@ void StaggeredGrid::initialiseG(real value){
   }
 }
 
+void StaggeredGrid::initialiseFlags(bool value){
+  for(int y = 0; y < (flags_.getSize(1)); ++y)
+  {
+    for(int x = 0; x < (flags_.getSize(0)); ++x)
+    {
+      flags_(x,y) = value;
+    }
+  }
+}
+
 void StaggeredGrid::normalizeP(){
   
   real sum = 0.0;
