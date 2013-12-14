@@ -235,13 +235,25 @@ void FluidSimulator:: updateVelocities(){
   
   for( int i = 1; i < (grid_.u().getSize(0) - 1); ++i ){
       for( int j = 1; j <  (grid_.u().getSize(1) - 1); ++j ){
-	grid_.u()(i,j) = grid_.f()(i,j-1) - (dt_dx)*( grid_.p()(i+1,j) - grid_.p()(i,j) );
+	if( grid_.isFluid(i,j) ){
+	  grid_.u()(i,j) = grid_.f()(i,j-1) - (dt_dx)*( grid_.p(i+1,j, WEST) - grid_.p()(i,j) );
+	}
+	else
+	{
+	  grid_.u()(i,j) = 0.0;
+	}
       }
   }
 
   for( int i = 1; i < (grid_.v().getSize(0) - 1); ++i ){
       for( int j = 1; j <  (grid_.v().getSize(1) - 1); ++j ){
-	grid_.v()(i,j) = grid_.g()(i-1,j) - (dt_dy)*( grid_.p()(i,j+1) - grid_.p()(i,j) );
+	if( grid_.isFluid(i,j) )
+	{
+	  grid_.v()(i,j) = grid_.g()(i-1,j) - (dt_dy)*( grid_.p(i,j+1, SOUTH) - grid_.p()(i,j) );
+	}
+	else{
+	  grid_.v()(i,j) = 0.0;
+	}
       }
   }
   

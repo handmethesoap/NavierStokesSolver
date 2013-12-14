@@ -46,6 +46,7 @@ int main()
   fluid.grid().setCellToObstacle(4,4);
   fluid.grid().initialiseU(xy_function);
   fluid.grid().initialiseV(xy_function);
+  fluid.grid().initialiseP(xy_function);
   
   //fluid.grid().flags().print();
   
@@ -66,11 +67,24 @@ int main()
   
   std::cout << "     PASSED" << std::endl;
   
-  std::cout << "+ Testing computation of RHS" << std::endl;
+  std::cout << "+ Testing Velocity Update" << std::endl;
   
   std::cout << fluid.grid().getNumFluid() << std::endl;
   fluid.composeRHS();
   fluid.grid().rhs().print();
+  
+  fluid.grid().p().print();
+  for(int i = 1; i < fluid.grid().p().getSize(0) - 1; ++i){
+    for(int j = 1; j < fluid.grid().p().getSize(1) - 1; ++j){
+      fluid.grid().p()(i,j) = fluid.grid().p(i+1,j, WEST);
+    }
+  }
+  fluid.grid().p().print();
+  
+  fluid.updateVelocities();
+  fluid.grid().u().print();
+  fluid.grid().v().print();
+    
   
   std::cout << "     PASSED" << std::endl;
 //   fluid.grid().u().print();

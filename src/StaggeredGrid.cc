@@ -125,17 +125,22 @@ void StaggeredGrid::normalizeP(){
   {
     for( int x = 1; x <= xSize_; ++x ) 
     {
-      sum += p_(x, y);
+      if( isFluid(x,y) ){
+	sum += p_(x, y);
+      }
+	
     }
   }
   
-  average = sum / double(ySize_*xSize_);
+  average = sum / getNumFluid();
   
   for( int y = 1; y <= ySize_ ; ++y )
   {
     for( int x = 1; x <= xSize_ ; ++x ) 
     {
-      p_(x, y) = p_(x, y) - average;
+      if( isFluid(x,y) ){
+	p_(x, y) = p_(x, y) - average;
+      }    	
     }
   }
 }

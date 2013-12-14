@@ -20,10 +20,10 @@ bool SORSolver::solve( StaggeredGrid & grid ){
     //one iteration of the SOR solver
     for( int x = 1; x < grid.p().getSize(0) - 1; ++x ){
       for( int y = 1; y < grid.p().getSize(1) - 1; ++y){
-	if(grid.isFluid(x,y){
+	if(grid.isFluid(x,y)){
 	  grid.p()(x,y) = (1.0 - omg_)*grid.p()(x,y)
-			  + omg_*sorConst*( (grid.p()(x+1,y) + grid.p()(x-1,y))*dx2 +
-					    (grid.p()(x,y+1) + grid.p()(x,y-1))*dy2 -
+			  + omg_*sorConst*( (grid.p(x+1,y, WEST) + grid.p(x-1,y, EAST))*dx2 +
+					    (grid.p(x,y+1, SOUTH) + grid.p(x,y-1, NORTH))*dy2 -
 					    grid.rhs()(x-1,y-1) );
 	}
 	else{

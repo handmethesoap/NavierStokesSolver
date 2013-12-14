@@ -227,7 +227,7 @@ inline real StaggeredGrid::p(const int x, const int y, Direction dir){
       return p_(x+1,y);
     }
     else if( dir == SOUTH ){
-      return -p_(x,y-1);
+      return p_(x,y-1);
     }
     else if( dir == WEST ){
       return p_(x-1,y);
