@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++0x -Wall -Wconversion -Wshadow -g    CMakeFiles/nusif.dir/FileReader.cc.o CMakeFiles/nusif.dir/Debug.cc.o CMakeFiles/nusif.dir/Array.cc.o CMakeFiles/nusif.dir/main.cc.o CMakeFiles/nusif.dir/StaggeredGrid.cc.o CMakeFiles/nusif.dir/SORSolver.cc.o CMakeFiles/nusif.dir/FluidSimulator.cc.o CMakeFiles/nusif.dir/VTKWriter.cc.o  -o nusif -rdynamic 
