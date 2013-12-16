@@ -46,6 +46,15 @@ real rand_function(real x, real y){
   return value;
 }
 
+real halfU(real x, real y){
+  if(y > 1.1){
+    return 1.0;
+  }
+  else{
+    return 0.0;
+  }
+}
+
 real test_function(real x, real y){
   real value = sin(4*pi*x) + sin(4*pi*y);
   return value;

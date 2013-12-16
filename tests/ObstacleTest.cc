@@ -40,15 +40,17 @@ int main()
   // Create staggered grid
   FluidSimulator fluid ( read );
   
-  fluid.grid().setCellToObstacle(3,3);
-  fluid.grid().setCellToObstacle(3,4);
-  fluid.grid().setCellToObstacle(4,3);
-  fluid.grid().setCellToObstacle(4,4);
+//   fluid.grid().setCellToObstacle(3,3);
+//   fluid.grid().setCellToObstacle(3,4);
+//   fluid.grid().setCellToObstacle(4,3);
+//   fluid.grid().setCellToObstacle(4,4);
+  //fluid.grid().createCircle(10,10,7);
+  fluid.grid().createRectangle(3,3,4,4);
   fluid.grid().initialiseU(xy_function);
   fluid.grid().initialiseV(xy_function);
   fluid.grid().initialiseP(xy_function);
   
-  //fluid.grid().flags().print();
+//   fluid.grid().flags().print();
   
   fluid.refreshBoundaries();
   std::cout << "+ Testing computation of F and G" << std::endl;
@@ -71,19 +73,19 @@ int main()
   
   std::cout << fluid.grid().getNumFluid() << std::endl;
   fluid.composeRHS();
-  fluid.grid().rhs().print();
-  
-  fluid.grid().p().print();
+//   fluid.grid().rhs().print();
+//   
+//   fluid.grid().p().print();
   for(int i = 1; i < fluid.grid().p().getSize(0) - 1; ++i){
     for(int j = 1; j < fluid.grid().p().getSize(1) - 1; ++j){
       fluid.grid().p()(i,j) = fluid.grid().p(i+1,j, WEST);
     }
   }
-  fluid.grid().p().print();
+//   fluid.grid().p().print();
   
   fluid.updateVelocities();
-  fluid.grid().u().print();
-  fluid.grid().v().print();
+//   fluid.grid().u().print();
+//   fluid.grid().v().print();
     
   
   std::cout << "     PASSED" << std::endl;

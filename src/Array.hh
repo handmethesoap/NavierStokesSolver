@@ -243,7 +243,7 @@ void Array<T>::print()
     {
       for( int x = 0; x < xSize_; ++x ) 
       {
-	std::cout << std::left << std::setw(13) << (*this)(x, y);
+	std::cout << std::left << " "/*std::setw(13)*/ << (*this)(x, y);
       }
       std::cout << std::endl;
     }

@@ -18,6 +18,7 @@ void FluidSimulator:: simulate( real duration ){
     if(n%normalizationfrequency_ == 0)
     {
 	grid_.normalizeP();
+	grid_.normalizeRHS();
     }
     if(n%outputinterval_ == 0)
     {

@@ -24,8 +24,8 @@ int main( int argc, char** argv )
     
     FileReader read;
     
-    read.registerIntParameter("xlength");
-    read.registerIntParameter("ylength");
+    read.registerRealParameter("xlength");
+    read.registerRealParameter("ylength");
     read.registerIntParameter("imax");
     read.registerIntParameter("jmax");
     read.registerRealParameter("eps");
@@ -42,17 +42,37 @@ int main( int argc, char** argv )
     read.registerIntParameter("timesteps");
     read.registerIntParameter("checkfrequency");
     read.registerRealParameter("safetyfactor");
-    read.registerRealParameter("boundary_velocity_N");
-    read.registerRealParameter("boundary_velocity_S");
-    read.registerRealParameter("boundary_velocity_E");
+    read.registerStringParameter("boundary_condition_W");
+    read.registerRealParameter("boundary_velocity_W");
+    read.registerStringParameter("boundary_condition_E");
     read.registerIntParameter("normalizationfrequency");
     read.registerIntParameter("checkfrequency");
     read.registerIntParameter("outputinterval");
-
+    read.registerRealParameter("RectangleX1");
+    read.registerRealParameter("RectangleY1");
+    read.registerRealParameter("RectangleX2");
+    read.registerRealParameter("RectangleY2");
     CHECK_MSG( read.readFile(parameterfile), "Could not read config file");
     read.printParameters();    
     
     FluidSimulator fluid(read);
+    
+    std::cout << int( read.getRealParameter("RectangleX1")/(read.getRealParameter("xlength")/read.getIntParameter("imax")) + 1.5) <<  " " 
+	      << int( read.getRealParameter("RectangleY1")/(read.getRealParameter("ylength")/read.getIntParameter("jmax")) + 1.5) <<  " " 
+	      << int( read.getRealParameter("RectangleX2")/(read.getRealParameter("xlength")/read.getIntParameter("imax")) + 1.5) <<   " " 
+	      << int( read.getRealParameter("RectangleY2")/(read.getRealParameter("ylength")/read.getIntParameter("jmax")) + 1.5) << std::endl;
+    
+    fluid.grid().createRectangle( int( read.getRealParameter("RectangleX1")/(read.getRealParameter("xlength")/read.getIntParameter("imax")) + 1.5),
+				  int( read.getRealParameter("RectangleY1")/(read.getRealParameter("ylength")/read.getIntParameter("jmax")) + 1.5),
+				  int( read.getRealParameter("RectangleX2")/(read.getRealParameter("xlength")/read.getIntParameter("imax")) + 1.5),
+				  int( read.getRealParameter("RectangleY2")/(read.getRealParameter("ylength")/read.getIntParameter("jmax")) + 1.5) );
+    
+    fluid.grid().flags().print();
+    
+    fluid.grid().initialiseU(halfU);
+    
+//     fluid.grid().u().print();
+			   
     
     fluid.simulate(read.getRealParameter("dt")*(double(read.getIntParameter("timesteps"))));
     

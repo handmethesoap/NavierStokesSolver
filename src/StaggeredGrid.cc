@@ -144,3 +144,62 @@ void StaggeredGrid::normalizeP(){
     }
   }
 }
+
+void StaggeredGrid::normalizeRHS(){
+  
+  real sum = 0.0;
+  real average;
+  
+
+  for( int y = 0; y <  ySize_ ; ++y )
+  {
+    for( int x = 0; x < xSize_; ++x ) 
+    {
+      if( isFluid(x,y) ){
+	sum += rhs_(x, y);
+      }
+	
+    }
+  }
+  
+  average = sum / getNumFluid();
+  
+  for( int y = 0; y < ySize_ ; ++y )
+  {
+    for( int x = 0; x < xSize_ ; ++x ) 
+    {
+      if( isFluid(x,y) ){
+	rhs_(x, y) = rhs_(x, y) - average;
+      }    	
+    }
+  }
+}
+
+void StaggeredGrid::createRectangle( int x1, int y1, int x2, int y2 ){
+  
+  for( int y = 1; y <= ySize_; ++y ){
+    for( int x = 1; x <= xSize_; ++x ){
+      if( (x >= x1 ) && 
+	  (y >= y1 ) && 
+	  (x <= x2 ) && 
+	  (y <= y2 ) ){
+	setCellToObstacle(x,y);
+      }
+    }
+  }
+  
+  
+}
+void StaggeredGrid::createCircle( int x, int y, int r){
+ 
+  for( int i = 1; i <= ySize_; ++i ){
+    for( int j = 1; j <= xSize_; ++j ){
+      if( ((x - i)*(x - i) + 
+	   (y - j)*(y - j)) <=
+	   (r*r) ){
+	setCellToObstacle(i,j);
+      }
+    }
+  }  
+  
+}

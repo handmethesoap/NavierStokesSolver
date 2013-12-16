@@ -51,15 +51,15 @@ public:
 							f_((configuration.getIntParameter("imax") + 1), (configuration.getIntParameter("jmax"))), 
 							g_((configuration.getIntParameter("imax")), (configuration.getIntParameter("jmax") + 1)), 
 							flags_((configuration.getIntParameter("imax") + 2), (configuration.getIntParameter("jmax")) + 2),
-							dx_(double(configuration.getIntParameter("xlength")) / double(configuration.getIntParameter("imax"))),
-							dy_(double(configuration.getIntParameter("ylength")) / double(configuration.getIntParameter("jmax"))),
+							dx_(double(configuration.getRealParameter("xlength")) / double(configuration.getIntParameter("imax"))),
+							dy_(double(configuration.getRealParameter("ylength")) / double(configuration.getIntParameter("jmax"))),
 							xSize_(configuration.getIntParameter("imax")),
 							ySize_(configuration.getIntParameter("jmax")){
       
 	CHECK_MSG(configuration.getIntParameter("imax") > 0, "the number of elements in the x direction must be greater than zero");
 	CHECK_MSG(configuration.getIntParameter("jmax") > 0, "the number of elements in the y direction must be greater than zero");
-	CHECK_MSG(configuration.getIntParameter("xlength") > 0.0, "the length in the x direction must exceed 0.0");
-	CHECK_MSG(configuration.getIntParameter("ylength") > 0.0, "the length in the y direction must exceed 0.0");
+	CHECK_MSG(configuration.getRealParameter("xlength") > 0.0, "the length in the x direction must exceed 0.0");
+	CHECK_MSG(configuration.getRealParameter("ylength") > 0.0, "the length in the y direction must exceed 0.0");
 	
 	initialiseFlags(1);
       
@@ -106,6 +106,7 @@ public:
    void initialiseFlags(bool value);
       
    void normalizeP(void);
+   void normalizeRHS(void);
    
    inline bool isFluid(const int x, const int y){ return flags_(x,y); };
    inline int getNumFluid();
@@ -118,6 +119,8 @@ public:
    inline real v(const int x, const int y);
    
    void setCellToObstacle(int x, int y){ flags_(x,y) = 0; };
+   void createRectangle( int x1, int y1, int x2, int y2 );
+   void createCircle( int x, int y, int r);
   
 protected:
    Array<real> p_;   //< pressure field
