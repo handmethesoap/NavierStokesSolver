@@ -99,7 +99,7 @@ real SORSolver:: calcResidual( StaggeredGrid & grid ){
     }
   }
   
-  return sqrt(r/(double(grid.p().getSize(0)*grid.p().getSize(1))));
+  return sqrt(r/(double(grid.getNumFluid())));
 
 }
 

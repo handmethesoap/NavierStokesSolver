@@ -15,11 +15,9 @@ void FluidSimulator:: simulate( real duration ){
   
   while( time < duration ){
   
-    if(1)//n%normalizationfrequency_ == 0)
-    {
-	grid_.normalizeP();
-	grid_.normalizeRHS();
-    }
+    grid_.normalizeP();
+    grid_.normalizeRHS();
+	
     if(n%outputinterval_ == 0)
     {
       writer.write();
@@ -48,7 +46,6 @@ void FluidSimulator:: simulateTimeStepCount( unsigned int nrOfTimeSteps ){
   VTKWriter writer(grid_, "vtkoutput/flusim" );
   
   for(unsigned int steps = 0; steps < nrOfTimeSteps; ++steps){
-    
     
     grid_.normalizeP();
     grid_.normalizeRHS();

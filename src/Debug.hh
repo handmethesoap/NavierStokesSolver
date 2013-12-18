@@ -54,7 +54,7 @@
 #else
 
 #define ASSERT_MSG(X, MSG)
-#define ASSERT    (X)
+#define ASSERT(X)
 
 #endif //NDEBUG
 

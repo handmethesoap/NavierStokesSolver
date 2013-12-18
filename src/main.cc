@@ -67,12 +67,9 @@ int main( int argc, char** argv )
 				  int( read.getRealParameter("RectangleX2")/(read.getRealParameter("xlength")/read.getIntParameter("imax")) + 1.5),
 				  int( read.getRealParameter("RectangleY2")/(read.getRealParameter("ylength")/read.getIntParameter("jmax")) + 1.5) );
     
-    //fluid.grid().flags().print();
+    fluid.grid().writePNG("finaldomain.png");
     
-    fluid.grid().initialiseU(halfU);
-    
-//     fluid.grid().u().print();
-			   
+    fluid.grid().initialiseU(halfU);   
     
     fluid.simulateTimeStepCount(read.getIntParameter("timesteps"));
     
