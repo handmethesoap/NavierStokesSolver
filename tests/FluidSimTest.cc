@@ -8,8 +8,8 @@ int main()
 {
     FileReader read;
     
-    read.registerIntParameter("xlength");
-    read.registerIntParameter("ylength");
+    read.registerRealParameter("xlength");
+    read.registerRealParameter("ylength");
     read.registerIntParameter("imax");
     read.registerIntParameter("jmax");
     read.registerRealParameter("eps");

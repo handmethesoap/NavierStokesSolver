@@ -16,8 +16,8 @@ class FluidSimulator
 						  gamma_(conf.getRealParameter("gamma")),
 						  dt_(conf.getRealParameter("dt")),
 						  Re_(conf.getRealParameter("Re")),
-						  gx_(conf.getRealParameter("gx")),
-						  gy_(conf.getRealParameter("gy")),
+						  gx_(conf.getRealParameter("GX")),
+						  gy_(conf.getRealParameter("GX")),
 						  safetyfactor_(conf.getRealParameter("safetyfactor")),
 						  normalizationfrequency_(conf.getIntParameter("normalizationfrequency")),
 						  outputinterval_(conf.getIntParameter("outputinterval")){

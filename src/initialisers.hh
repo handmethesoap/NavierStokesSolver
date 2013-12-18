@@ -47,7 +47,7 @@ real rand_function(real x, real y){
 }
 
 real halfU(real x, real y){
-  if(y > 1.1){
+  if(y > 1.2){
     return 1.0;
   }
   else{

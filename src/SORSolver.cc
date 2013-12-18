@@ -10,9 +10,20 @@ bool SORSolver::solve( StaggeredGrid & grid ){
   real sorConst = 1.0/(2.0*dx2 + 2.0*dy2);
   real r = 0.0;
   int i;
+  real sum = 0.0;
   //copy points of border of grid p to ghost layer
   fillBoundary( grid );
   r = calcResidual( grid );
+  
+  //sum over rhs to check if solution exists
+  for( int x = 0; x < grid.rhs().getSize(0); ++x ){
+    for( int y = 0; y < grid.rhs().getSize(1); ++y ){
+      if(grid.isFluid(x+1,y+1)){
+	sum += grid.rhs()(x,y);
+      }
+    }
+  }
+  std::cout << "Sum over rhs = " << sum << std::endl;
   
   for( i = 0; i < itermax_; ++i){
     

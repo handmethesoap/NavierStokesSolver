@@ -32,8 +32,8 @@ int main( int argc, char** argv )
     read.registerRealParameter("omg");
     read.registerIntParameter("itermax");
     read.registerRealParameter("gamma");
-    read.registerRealParameter("gx");
-    read.registerRealParameter("gy");
+    read.registerRealParameter("GX");
+    read.registerRealParameter("GY");
     read.registerRealParameter("Re");
     read.registerRealParameter("U_INIT");
     read.registerRealParameter("V_INIT");
@@ -69,7 +69,7 @@ int main( int argc, char** argv )
     
     fluid.grid().flags().print();
     
-    fluid.grid().initialiseU(halfU);
+    //fluid.grid().initialiseU(halfU);
     
 //     fluid.grid().u().print();
 			   
