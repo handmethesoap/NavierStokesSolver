@@ -1,4 +1,4 @@
-
+#include "GrayScaleImage.hh"
 #include "StaggeredGrid.hh"
 
 void StaggeredGrid::initialiseP(real(* initialiser)(real, real)){
@@ -203,3 +203,33 @@ void StaggeredGrid::createCircle( int x, int y, int r){
   }  
   
 }
+
+void StaggeredGrid::readPNG(const std::string & pngFilename){
+  
+  GrayScaleImage png(pngFilename);
+  
+  for ( int i = 1; i <= xSize_; ++i ){
+    for ( int j = 1; j <= ySize_; ++j ){
+
+	flags_(i,j) = png(i-1,j-1);
+	
+    }
+  }
+  
+}
+
+void StaggeredGrid::writePNG(const std::string & pngFilename){
+  
+  GrayScaleImage png(xSize_, ySize_);
+  
+  for ( int i = 1; i <= xSize_; ++i ){
+    for ( int j = 1; j <= ySize_; ++j ){
+      png(i-1,j-1) = (unsigned char)(flags_(i,j)*255);
+    }
+  }
+  png.save(pngFilename);
+  
+}
+
+
+

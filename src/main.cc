@@ -67,14 +67,14 @@ int main( int argc, char** argv )
 				  int( read.getRealParameter("RectangleX2")/(read.getRealParameter("xlength")/read.getIntParameter("imax")) + 1.5),
 				  int( read.getRealParameter("RectangleY2")/(read.getRealParameter("ylength")/read.getIntParameter("jmax")) + 1.5) );
     
-    fluid.grid().flags().print();
+    //fluid.grid().flags().print();
     
-    //fluid.grid().initialiseU(halfU);
+    fluid.grid().initialiseU(halfU);
     
 //     fluid.grid().u().print();
 			   
     
-    fluid.simulate(read.getRealParameter("dt")*(double(read.getIntParameter("timesteps"))));
+    fluid.simulateTimeStepCount(read.getIntParameter("timesteps"));
     
     gettimeofday(&end, NULL);
     operation_time = (end.tv_sec - start.tv_sec)*1000000 + end.tv_usec - start.tv_usec;

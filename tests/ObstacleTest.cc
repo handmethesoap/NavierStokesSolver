@@ -10,16 +10,16 @@ int main()
   srand (u_int(time(NULL)));
   FileReader read;
     
-  read.registerIntParameter("xlength");
-  read.registerIntParameter("ylength");
+  read.registerRealParameter("xlength");
+  read.registerRealParameter("ylength");
   read.registerIntParameter("imax");
   read.registerIntParameter("jmax");
   read.registerRealParameter("eps");
   read.registerRealParameter("omg");
   read.registerIntParameter("itermax");
   read.registerRealParameter("gamma");
-  read.registerRealParameter("gx");
-  read.registerRealParameter("gy");
+  read.registerRealParameter("GX");
+  read.registerRealParameter("GY");
   read.registerRealParameter("Re");
   read.registerRealParameter("U_INIT");
   read.registerRealParameter("V_INIT");
@@ -45,7 +45,8 @@ int main()
 //   fluid.grid().setCellToObstacle(4,3);
 //   fluid.grid().setCellToObstacle(4,4);
   //fluid.grid().createCircle(10,10,7);
-  fluid.grid().createRectangle(3,3,4,4);
+  //fluid.grid().createRectangle(3,3,4,4);
+  fluid.grid().readPNG("test.png");
   fluid.grid().initialiseU(xy_function);
   fluid.grid().initialiseV(xy_function);
   fluid.grid().initialiseP(xy_function);
@@ -97,6 +98,8 @@ int main()
   std::cout << fluid.grid().isFluid(1,1) << " " << fluid.grid().getNumFluid() << std::endl;
 
   std::cout << std::endl << "########## OBSTACLE TEST PASSED ##########" << std::endl << std::endl;
+  
+  fluid.grid().writePNG("test.png");
   
   return 0;
 }

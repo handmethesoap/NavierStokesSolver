@@ -90,10 +90,12 @@ real SORSolver:: calcResidual( StaggeredGrid & grid ){
   
   for( int x = 1; x < grid.p().getSize(0) - 1; ++x ){
     for( int y = 1; y < grid.p().getSize(1) - 1; ++y){
-      rtemp =   (grid.rhs()(x-1,y-1)) 
-	      - (grid.p()(x+1,y) - 2*grid.p()(x,y) + grid.p()(x-1,y))*dxdx
-	      - (grid.p()(x,y+1) - 2*grid.p()(x,y) + grid.p()(x,y-1))*dydy;
-      r += rtemp*rtemp;
+      if(grid.isFluid(x,y)){
+	rtemp =   (grid.rhs()(x-1,y-1)) 
+		- (grid.p(x+1,y, WEST) - 2*grid.p()(x,y) + grid.p(x-1,y, EAST))*dxdx
+		- (grid.p(x,y+1, SOUTH) - 2*grid.p()(x,y) + grid.p(x,y-1, NORTH))*dydy;
+	r += rtemp*rtemp;
+      }
     }
   }
   

@@ -26,6 +26,13 @@ GrayScaleImage::GrayScaleImage( const std::string & pngFilename )
    CHECK_MSG( error == 0 , "Error while loading PNG file: " << lodepng_error_text(error) );
 }
 
+GrayScaleImage::GrayScaleImage( int xSize, int ySize )
+{
+  size_[0] = xSize;
+  size_[1] = ySize;
+  image_.resize(xSize*ySize);
+}
+
 void GrayScaleImage::save( const std::string & pngFilename )
 {
    unsigned int error = lodepng::encode( pngFilename, image_,
@@ -46,6 +53,11 @@ real GrayScaleImage::operator() ( int x, int y ) const
    return real ( getElement(x, yFlip) ) / maxVal;
 }
 
+unsigned char & GrayScaleImage::operator() ( int x, int y )
+{
+   const int yFlip = size_[1] - y - 1;
+   return getElement(x, yFlip); 
+}
 
 GrayScaleImage GrayScaleImage::getResizedImage( int newWidth, int newHeight ) const
 {

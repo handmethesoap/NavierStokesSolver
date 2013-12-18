@@ -43,6 +43,8 @@ class FluidSimulator
       void refreshBoundaries();
       void composeRHS();
       void updateVelocities();
+      
+      
   private:    
       
       

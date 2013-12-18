@@ -121,6 +121,9 @@ public:
    void setCellToObstacle(int x, int y){ flags_(x,y) = 0; };
    void createRectangle( int x1, int y1, int x2, int y2 );
    void createCircle( int x, int y, int r);
+   
+   void readPNG(const std::string & pngFilename);
+   void writePNG(const std::string & pngFilename);
   
 protected:
    Array<real> p_;   //< pressure field
